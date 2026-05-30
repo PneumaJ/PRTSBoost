@@ -1,0 +1,268 @@
+/* cart-popup 组件样式 */
+
+/* 遮罩层 */
+.cp-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+
+.cp-mask-show {
+  opacity: 1;
+}
+
+/* 弹窗面板 */
+.cp-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 70vh;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.3s ease-out;
+}
+
+.cp-panel-show {
+  transform: translateY(0);
+}
+
+/* 拖拽条 */
+.cp-handle-bar {
+  width: 60rpx;
+  height: 8rpx;
+  background: #ddd;
+  border-radius: 4rpx;
+  margin: 10rpx auto 6rpx;
+}
+
+/* 标题栏 */
+.cp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.cp-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+.cp-clear {
+  flex: 1;
+  text-align: right;
+  margin-right: 16rpx;
+  font-size: 24rpx;
+  color: #999;
+  padding: 8rpx 0;
+}
+
+.cp-close {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: #999;
+  flex-shrink: 0;
+}
+
+/* 滚动区域 */
+.cp-body {
+  flex: 1;
+  height: 0;
+  max-height: 50vh;
+  padding: 8rpx 0;
+}
+
+/* 分组 */
+.cp-group {
+  margin-bottom: 4rpx;
+}
+
+.cp-group-title {
+  padding: 16rpx 32rpx 8rpx;
+}
+
+.cp-group-name {
+  font-size: 24rpx;
+  color: #999;
+  font-weight: 600;
+}
+
+/* 项目行 */
+.cp-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 32rpx;
+  background: #fff;
+}
+
+.cp-item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.cp-item-name {
+  font-size: 28rpx;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cp-item-variant {
+  font-size: 24rpx;
+  color: #E54545;
+  margin-left: 6rpx;
+  flex-shrink: 0;
+}
+
+.cp-item-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.cp-item-price {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #E54545;
+  margin-right: 16rpx;
+}
+
+/* 按关计价数量控制 */
+.cp-qty-wrap {
+  display: flex;
+  align-items: center;
+  margin-right: 16rpx;
+}
+
+.cp-qty-btn {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 20rpx;
+  border: 2rpx solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.cp-qty-btn:active {
+  background: #f5f5f5;
+}
+
+.cp-qty-icon {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1;
+}
+
+.cp-qty-num {
+  width: 48rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.cp-item-del {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 20rpx;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cp-item-del-icon {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 空购物车 */
+.cp-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+}
+
+.cp-empty-text {
+  font-size: 30rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.cp-empty-hint {
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+/* 底部操作栏 */
+.cp-footer {
+  border-top: 1rpx solid #f0f0f0;
+  padding: 14rpx 32rpx;
+  padding-bottom: calc(14rpx + env(safe-area-inset-bottom));
+  background: #fff;
+}
+
+.cp-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.cp-total-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.cp-total-price {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #E54545;
+}
+
+.cp-generate-btn {
+  width: 100%;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background: #E54545;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cp-generate-btn:active {
+  background: #D03A3A;
+}
+
+.cp-generate-btn-disabled {
+  background: #ccc;
+}

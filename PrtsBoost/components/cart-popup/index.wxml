@@ -1,0 +1,80 @@
+<!-- cart-popup 组件 — 底部购物车弹窗 -->
+<view class="cp-mask {{show ? 'cp-mask-show' : ''}}" wx:if="{{show}}" bindtap="onClose">
+  <view class="cp-panel {{show ? 'cp-panel-show' : ''}}" catchtap="onContentTap">
+
+    <!-- 顶部拖拽条 -->
+    <view class="cp-handle-bar"></view>
+
+    <!-- 标题栏 -->
+    <view class="cp-header">
+      <text class="cp-title">购物车 ({{cartItems.length}})</text>
+      <text class="cp-clear" wx:if="{{cartItems.length > 0}}" catchtap="onClearAll">清空</text>
+      <text class="cp-close" bindtap="onClose">✕</text>
+    </view>
+
+    <!-- 内容区域 -->
+    <scroll-view class="cp-body" scroll-y enhanced="{{true}}" show-scrollbar="{{false}}" wx:if="{{groupedItems.length > 0}}">
+      <block wx:for="{{groupedItems}}" wx:key="groupName" wx:for-item="group">
+        <view class="cp-group">
+          <!-- 分组标题 -->
+          <view class="cp-group-title">
+            <text class="cp-group-name">{{group.groupName}}</text>
+          </view>
+
+          <!-- 项目列表 -->
+          <view
+            class="cp-item"
+            wx:for="{{group.items}}"
+            wx:key="cartId"
+            wx:for-item="item"
+          >
+            <view class="cp-item-info">
+              <text class="cp-item-name">{{item.name}}</text>
+              <text class="cp-item-variant" wx:if="{{item.variantKey === 'variant' && item.variant}}">
+                ({{item.variant.name}})
+              </text>
+            </view>
+            <view class="cp-item-right">
+              <!-- 按关计价数量控制 -->
+              <view class="cp-qty-wrap" wx:if="{{item.isPerUnit}}">
+                <view class="cp-qty-btn" data-cart-id="{{item.cartId}}" data-delta="-1" catchtap="onQuantityChange">
+                  <text class="cp-qty-icon">−</text>
+                </view>
+                <text class="cp-qty-num">{{item.quantity}}</text>
+                <view class="cp-qty-btn" data-cart-id="{{item.cartId}}" data-delta="1" catchtap="onQuantityChange">
+                  <text class="cp-qty-icon">+</text>
+                </view>
+              </view>
+              <text class="cp-item-price">
+                {{item.variantKey === 'variant' && item.variant ? item.variant.price : (item.isPerUnit ? item.unitPrice * item.quantity : item.price)}}r
+              </text>
+              <view class="cp-item-del" data-cart-id="{{item.cartId}}" catchtap="onRemove">
+                <text class="cp-item-del-icon">✕</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+
+    <!-- 空购物车 -->
+    <view class="cp-empty" wx:else>
+      <text class="cp-empty-text">购物车空空如也</text>
+      <text class="cp-empty-hint">去套餐或单项页面勾选项目吧～</text>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <view class="cp-footer">
+      <view class="cp-total-row">
+        <text class="cp-total-label">总计</text>
+        <text class="cp-total-price">{{total}}r</text>
+      </view>
+      <button class="cp-generate-btn {{total === 0 ? 'cp-generate-btn-disabled' : ''}}"
+              disabled="{{total === 0}}"
+              bindtap="onGenerate">
+        生成汇总图片
+      </button>
+    </view>
+
+  </view>
+</view>

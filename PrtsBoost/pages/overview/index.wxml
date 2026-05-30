@@ -1,0 +1,63 @@
+<!-- 总览页 — 全包优惠 -->
+<view class="page-container">
+
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">PrtsBoost</text>
+    <text class="page-subtitle">价格总览 · 大类全包</text>
+  </view>
+
+  <!-- 全包优惠列表 -->
+  <scroll-view class="ov-scroll" scroll-y enhanced="{{true}}" show-scrollbar="{{false}}" bounces="{{false}}">
+    <view class="ov-section">
+      <view
+        class="ov-row"
+        wx:for="{{categoryPkgList}}"
+        wx:key="_idx"
+      >
+        <view class="ov-row-info">
+          <text class="ov-row-category">{{item.category}}</text>
+          <text class="ov-row-name">{{item.name}}</text>
+        </view>
+        <view class="ov-row-right">
+          <text class="ov-row-price">{{item.price}}r</text>
+          <view
+            class="btn-add-circle {{item.isSelected ? 'active' : ''}}"
+            data-index="{{item._idx}}"
+            catchtap="onAddCategoryPkg"
+          >
+            <text wx:if="{{!item.isSelected}}">+</text>
+            <text wx:else>✓</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view style="height: 160rpx;"></view>
+  </scroll-view>
+
+  <!-- 悬浮购物车按钮 -->
+  <view class="float-cart-btn" bindtap="onCartBtnTap">
+    <image class="fc-icon" src="/images/icons/goods.png" mode="aspectFit" />
+    <view class="fc-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>
+  </view>
+
+  <!-- 购物车弹窗 -->
+  <cart-popup
+    show="{{showCart}}"
+    cartItems="{{cartItems}}"
+    treeRoots="{{treeRoots}}"
+    bind:close="onCartClose"
+    bind:cart-changed="onCartChanged"
+    bind:generate="onGenerateImage"
+  />
+
+  <!-- 图片预览 -->
+  <image-preview
+    show="{{showImagePreview}}"
+    cartItems="{{cartItems}}"
+    treeRoots="{{treeRoots}}"
+    bind:close="onImagePreviewClose"
+  />
+</view>

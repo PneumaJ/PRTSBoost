@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "tree-node": "../../components/tree-node/index",
+    "cart-popup": "../../components/cart-popup/index",
+    "image-preview": "../../components/image-preview/index"
+  },
+  "navigationBarTitleText": "PrtsBoost",
+  "disableScroll": true
+}

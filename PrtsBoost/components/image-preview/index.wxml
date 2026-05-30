@@ -1,0 +1,43 @@
+<!-- image-preview 组件 — 全屏图片预览 -->
+<view class="ip-overlay" wx:if="{{show}}" bindtap="onClose">
+
+  <!-- 固定关闭按钮 -->
+  <view class="ip-close-fixed" bindtap="onClose">
+    <text class="ip-close-fixed-x">✕</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="ip-loading" wx:if="{{loading}}">
+    <text class="ip-loading-text">正在生成图片...</text>
+  </view>
+
+  <!-- 可滚动的图片区域 -->
+  <scroll-view
+    class="ip-scroll"
+    scroll-y
+    enhanced="{{true}}"
+    show-scrollbar="{{false}}"
+    wx:if="{{imagePath && !loading}}"
+    catchtap="onContainerTap"
+  >
+    <image
+      class="ip-image"
+      src="{{imagePath}}"
+      mode="widthFix"
+      show-menu-by-longpress="{{true}}"
+    />
+    <view class="ip-footer">
+      <text class="ip-hint">长按图片保存，或截图保存</text>
+      <view class="ip-close-btn" bindtap="onClose"><text>关闭</text></view>
+    </view>
+    <view style="height: 60rpx;"></view>
+  </scroll-view>
+
+  <!-- 隐藏的 Canvas -->
+  <canvas
+    type="2d"
+    id="summary-canvas"
+    class="ip-canvas"
+    style="width:{{canvasWidth}}px; height:{{canvasHeight}}px;"
+  ></canvas>
+</view>

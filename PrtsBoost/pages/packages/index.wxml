@@ -1,0 +1,107 @@
+<!-- 套餐页 -->
+<view class="page-container">
+
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">PrtsBoost</text>
+    <text class="page-subtitle">主推套餐 · 优惠全包</text>
+  </view>
+
+  <!-- 套餐列表 -->
+  <scroll-view class="pkg-scroll" scroll-y enhanced="{{true}}" show-scrollbar="{{false}}" bounces="{{false}}">
+    <view
+      class="pkg-card {{pkgSelected[item.id] ? 'pkg-card-selected' : ''}}"
+      wx:for="{{packages}}"
+      wx:key="id"
+    >
+      <!-- 套餐名称 + 添加按钮 -->
+      <view class="pkg-top">
+        <view class="pkg-name-wrap">
+          <text class="pkg-name">{{item.name}}</text>
+          <text class="pkg-selected-tag" wx:if="{{pkgSelected[item.id]}}">已选</text>
+        </view>
+
+        <!-- 添加/取消按钮 -->
+        <view
+          class="btn-add-circle {{pkgSelected[item.id] ? 'active' : ''}}"
+          data-pkg-id="{{item.id}}"
+          catchtap="onAddPackage"
+        >
+          <text wx:if="{{!pkgSelected[item.id]}}">+</text>
+          <text wx:else>✓</text>
+        </view>
+      </view>
+
+      <!-- 内容说明 -->
+      <view class="pkg-content-wrap">
+        <text class="pkg-label">内容</text>
+        <text class="pkg-content">{{item.content}}</text>
+      </view>
+
+      <!-- 要求 -->
+      <view class="pkg-req-wrap" wx:if="{{item.requirement}}">
+        <text class="pkg-label">要求</text>
+        <text class="pkg-req">{{item.requirement}}</text>
+      </view>
+
+      <!-- 价格 + 变体 -->
+      <view class="pkg-bottom">
+        <view class="pkg-price-wrap">
+          <text class="pkg-price">
+            {{variants[item.id] === 'variant' && item.variant ? item.variant.price : item.price}}r
+          </text>
+          <text class="pkg-price-original" wx:if="{{variants[item.id] === 'variant' && item.variant}}">
+            {{item.price}}r
+          </text>
+        </view>
+
+        <!-- 变体切换（仅套餐3、4有） -->
+        <view class="pkg-variant" wx:if="{{item.variant}}">
+          <view
+            class="pkg-variant-opt {{variants[item.id] !== 'variant' ? 'pkg-variant-active' : ''}}"
+            data-pkg-id="{{item.id}}"
+            data-variant-key="default"
+            catchtap="onVariantChange"
+          >
+            <text>默认</text>
+          </view>
+          <view
+            class="pkg-variant-opt {{variants[item.id] === 'variant' ? 'pkg-variant-active' : ''}}"
+            data-pkg-id="{{item.id}}"
+            data-variant-key="variant"
+            catchtap="onVariantChange"
+          >
+            <text>{{item.variant.name}} — {{item.variant.price}}r</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部占位（避免被悬浮按钮遮挡） -->
+    <view style="height: 160rpx;"></view>
+  </scroll-view>
+
+  <!-- 悬浮购物车按钮 -->
+  <view class="float-cart-btn" bindtap="onCartBtnTap">
+    <image class="fc-icon" src="/images/icons/goods.png" mode="aspectFit" />
+    <view class="fc-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>
+  </view>
+
+  <!-- 购物车弹窗 -->
+  <cart-popup
+    show="{{showCart}}"
+    cartItems="{{cartItems}}"
+    treeRoots="{{treeRoots}}"
+    bind:close="onCartClose"
+    bind:cart-changed="onCartChanged"
+    bind:generate="onGenerateImage"
+  />
+
+  <!-- 图片预览 -->
+  <image-preview
+    show="{{showImagePreview}}"
+    cartItems="{{cartItems}}"
+    treeRoots="{{treeRoots}}"
+    bind:close="onImagePreviewClose"
+  />
+</view>

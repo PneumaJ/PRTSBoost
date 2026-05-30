@@ -1,0 +1,19 @@
+# WeChat Mini Program
+node_modules/
+unpackage/
+miniprogram_npm/
+
+# Cloud functions
+cloudfunctions/**/node_modules/
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Claude local settings (contains personal paths)
+.claude/settings.local.json
+
+# Private config (may contain personal overrides)
+project.private.config.json

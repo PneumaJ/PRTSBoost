@@ -1,0 +1,62 @@
+<!-- tree-node 组件 — 单个树节点行 -->
+<view class="tn-row-wrap" wx:if="{{node}}">
+
+  <!-- 节点行 -->
+  <view
+    class="tn-row"
+    style="padding-left: {{indent + 24}}rpx"
+    data-node-id="{{node.id}}"
+    bindtap="onRowTap"
+  >
+
+    <!-- 展开箭头区域 -->
+    <view class="tn-arrow-area" catchtap="onArrowTap">
+      <view
+        class="tn-arrow {{isExpanded ? 'tn-arrow-open' : ''}}"
+        wx:if="{{hasChildren}}"
+      ></view>
+      <view class="tn-arrow-placeholder" wx:else></view>
+    </view>
+
+    <!-- 勾选图标 — 无价格的非叶子节点不可勾选 -->
+    <view class="tn-check-area" catchtap="onCheckTap" wx:if="{{showCheckbox}}">
+      <view class="tn-check tn-check-{{checkState}}">
+        <text wx:if="{{checkState === 'checked'}}" class="tn-check-mark">✓</text>
+        <text wx:if="{{checkState === 'partial'}}" class="tn-check-partial-mark">—</text>
+      </view>
+    </view>
+    <view class="tn-check-area" wx:else></view>
+
+    <!-- 名称、备注和内容 -->
+    <view class="tn-info">
+      <text class="tn-name {{checkState === 'checked' ? 'tn-name-active' : ''}}">{{node.name}}</text>
+      <text class="tn-req-inline" wx:if="{{node.requirement}}" catchtap="onReqTap">（{{node.requirement}}）</text>
+      <text class="tn-content" wx:if="{{node.content}}">{{node.content}}</text>
+
+      <!-- 按关计价数量调节 -->
+      <view class="tn-qty-wrap" wx:if="{{node.isPerUnit}}">
+        <view class="tn-qty-btn" catchtap="onQtyMinus"><text class="tn-qty-icon">−</text></view>
+        <input class="tn-qty-input" type="number" value="{{localQuantity}}" bindinput="onQtyInput" />
+        <view class="tn-qty-btn" catchtap="onQtyPlus"><text class="tn-qty-icon">+</text></view>
+      </view>
+    </view>
+
+    <!-- 价格 -->
+    <text class="tn-price" wx:if="{{node.price != null}}">{{node.price}}r</text>
+    <text class="tn-price tn-price-perunit" wx:elif="{{node.isPerUnit}}">{{node.unitPrice * localQuantity}}r</text>
+  </view>
+
+  <!-- 备注弹出层 -->
+  <view class="tn-req-overlay" wx:if="{{showReqModal}}" catchtap="onReqModalClose">
+    <view class="tn-req-modal" catchtap="">
+      <view class="tn-req-modal-close" catchtap="onReqModalClose">
+        <text class="tn-req-modal-close-x">✕</text>
+      </view>
+      <view class="tn-req-modal-title">{{node.name}}</view>
+      <scroll-view class="tn-req-modal-body" scroll-y enhanced="{{true}}" show-scrollbar="{{false}}" wx:if="{{node.requirement}}">
+        <text class="tn-req-modal-text">{{node.requirement}}</text>
+      </scroll-view>
+    </view>
+  </view>
+
+</view>

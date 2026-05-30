@@ -1,0 +1,124 @@
+/* 终末地代肝选购助手 — 全局样式 */
+
+page {
+  --primary: #E54545;
+  --primary-light: #FF6B6B;
+  --primary-bg: #FFF0F0;
+  --text: #333333;
+  --text-secondary: #666666;
+  --text-hint: #999999;
+  --border: #EEEEEE;
+  --bg: #F5F5F5;
+  --white: #FFFFFF;
+  --shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 28rpx;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* 卡片样式 */
+.card {
+  background: var(--white);
+  border-radius: 16rpx;
+  box-shadow: var(--shadow);
+  padding: 24rpx;
+  margin: 16rpx 24rpx;
+}
+
+/* 价格文字 */
+.price-tag {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 32rpx;
+}
+
+.price-tag-small {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 26rpx;
+}
+
+/* 按钮重置 */
+button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  line-height: inherit;
+}
+
+button::after {
+  border: none;
+}
+
+button:focus {
+  outline: 0;
+}
+
+/* 悬浮购物车按钮 */
+.float-cart-btn {
+  position: fixed;
+  left: 30rpx;
+  bottom: 120rpx;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 48rpx;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6rpx 20rpx rgba(229, 69, 69, 0.4);
+  z-index: 100;
+}
+
+.float-cart-btn:active {
+  background: #D03A3A;
+}
+
+.fc-icon {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.fc-badge {
+  position: absolute;
+  top: -6rpx;
+  right: -6rpx;
+  min-width: 34rpx;
+  height: 34rpx;
+  border-radius: 17rpx;
+  background: #FF4444;
+  color: #fff;
+  font-size: 22rpx;
+  text-align: center;
+  line-height: 34rpx;
+  padding: 0 8rpx;
+  box-sizing: border-box;
+}
+
+/* 通用圆角添加按钮 */
+.btn-add-circle {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 26rpx;
+  border: 3rpx solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: var(--primary);
+  line-height: 1;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-add-circle.active {
+  background: var(--primary);
+  color: #fff;
+}

@@ -1,0 +1,246 @@
+/* tree-node 组件样式 */
+
+.tn-row-wrap {
+  width: 100%;
+}
+
+.tn-row {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  min-height: 72rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.tn-row:active {
+  background: #fafafa;
+}
+
+/* 展开箭头 */
+.tn-arrow-area {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tn-arrow {
+  width: 0;
+  height: 0;
+  border-left: 10rpx solid #999;
+  border-top: 8rpx solid transparent;
+  border-bottom: 8rpx solid transparent;
+  transition: transform 0.2s;
+}
+
+.tn-arrow-open {
+  transform: rotate(90deg);
+}
+
+.tn-arrow-placeholder {
+  width: 12rpx;
+  height: 12rpx;
+}
+
+/* 勾选图标 */
+.tn-check-area {
+  width: 44rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 16rpx;
+}
+
+.tn-check {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 18rpx;
+  border: 3rpx solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.tn-check-checked {
+  border-color: #E54545;
+  background: #E54545;
+}
+
+.tn-check-partial {
+  border-color: #E54545;
+  background: #fff;
+}
+
+.tn-check-mark {
+  color: #fff;
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tn-check-partial-mark {
+  color: #E54545;
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 信息区 */
+.tn-info {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  padding-right: 12rpx;
+  overflow: hidden;
+}
+
+.tn-name {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.tn-name-active {
+  color: #E54545;
+  font-weight: 600;
+}
+
+.tn-req-inline {
+  font-size: 20rpx;
+  color: #E5A100;
+  margin-left: 2rpx;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tn-content {
+  font-size: 22rpx;
+  color: #999;
+  margin-left: 8rpx;
+  flex-shrink: 0;
+}
+
+/* 价格 */
+.tn-price {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #E54545;
+  flex-shrink: 0;
+  margin-left: 8rpx;
+}
+
+.tn-price-perunit {
+  font-size: 24rpx;
+}
+
+/* 按关计价数量调节 */
+.tn-qty-wrap {
+  display: flex;
+  align-items: center;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
+
+.tn-qty-btn {
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid #ddd;
+  border-radius: 8rpx;
+  background: #fafafa;
+}
+
+.tn-qty-btn:active {
+  background: #eee;
+}
+
+.tn-qty-icon {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1;
+}
+
+.tn-qty-input {
+  width: 64rpx;
+  height: 36rpx;
+  margin: 0 6rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #333;
+  border: 2rpx solid #ddd;
+  border-radius: 8rpx;
+  background: #fff;
+}
+
+/* 备注弹出层 */
+.tn-req-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.tn-req-modal {
+  position: relative;
+  width: 520rpx;
+  max-height: 480rpx;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 20rpx;
+  padding: 40rpx 36rpx 36rpx;
+  backdrop-filter: blur(10px);
+}
+
+.tn-req-modal-close {
+  position: absolute;
+  top: 12rpx;
+  right: 16rpx;
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tn-req-modal-close-x {
+  font-size: 28rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.tn-req-modal-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+  padding-right: 40rpx;
+}
+
+.tn-req-modal-body {
+  max-height: 320rpx;
+}
+
+.tn-req-modal-text {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
