@@ -1,9 +1,16 @@
 <!-- 总览页 — 全包优惠 -->
 <view class="page-container">
 
+  <!-- 全局背景 -->
+  <image class="bg-image" src="/images/bg.jpg" mode="aspectFill" />
+
   <!-- 页面标题 -->
   <view class="page-header">
-    <text class="page-title">PrtsBoost</text>
+    <view class="page-title-row">
+      <image class="page-title-img" src="/images/title.jpg" mode="heightFix" />
+      <text class="page-title">PRTSBoost</text>
+      <text class="page-version" wx:if="{{versionLabel}}">{{versionLabel}}</text>
+    </view>
     <text class="page-subtitle">价格总览 · 大类全包</text>
   </view>
 
@@ -58,6 +65,7 @@
     show="{{showImagePreview}}"
     cartItems="{{cartItems}}"
     treeRoots="{{treeRoots}}"
+    versionLabel="{{versionLabel}}"
     bind:close="onImagePreviewClose"
   />
 </view>

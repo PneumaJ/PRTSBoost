@@ -1,0 +1,171 @@
+/* 托管页样式 */
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: transparent;
+}
+
+.page-header {
+  padding: 24rpx 32rpx 8rpx;
+}
+
+.page-title-row {
+  display: flex;
+  align-items: center;
+}
+
+.page-title-img {
+  height: 44rpx;
+  width: auto;
+  margin-right: 12rpx;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+.page-subtitle {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 12rpx;
+}
+
+/* 滚动区 */
+.entrust-scroll {
+  flex: 1;
+  height: 0;
+}
+
+/* 卡片区域 */
+.entrust-section {
+  padding: 20rpx 24rpx;
+}
+
+/* 套餐卡片 */
+.entrust-card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 20rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.entrust-card:active {
+  background: rgba(255, 255, 255, 1);
+}
+
+.entrust-card-selected {
+  border-color: #E54545;
+  background: rgba(229, 69, 69, 0.04);
+}
+
+/* 卡片头部 */
+.entrust-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18rpx;
+}
+
+.entrust-card-name-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.entrust-card-name {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+.entrust-card-selected-tag {
+  font-size: 20rpx;
+  color: #E54545;
+  background: rgba(229, 69, 69, 0.1);
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  margin-left: 12rpx;
+}
+
+.entrust-card-price-wrap {
+  display: flex;
+  align-items: baseline;
+}
+
+.entrust-card-price {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #E54545;
+}
+
+.entrust-card-period {
+  font-size: 22rpx;
+  color: #999;
+  margin-left: 4rpx;
+}
+
+/* 特性列表 — 两列网格 */
+.entrust-features {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 6rpx;
+}
+
+.entrust-feat {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  padding: 8rpx 0;
+}
+
+.entrust-feat-icon {
+  font-size: 26rpx;
+  margin-right: 10rpx;
+  width: 32rpx;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.entrust-feat-on .entrust-feat-icon {
+  color: #E54545;
+  font-weight: 700;
+}
+
+.entrust-feat-on .entrust-feat-name {
+  color: #333;
+  font-size: 26rpx;
+}
+
+.entrust-feat-off .entrust-feat-icon {
+  color: #ccc;
+}
+
+.entrust-feat-off .entrust-feat-name {
+  color: #ccc;
+  font-size: 26rpx;
+}
+
+/* 备注 */
+.entrust-notes {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12rpx;
+  padding: 20rpx 28rpx;
+  margin-top: 4rpx;
+}
+
+.entrust-notes-label {
+  font-size: 24rpx;
+  color: #999;
+  font-weight: 600;
+}
+
+.entrust-notes-text {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.6;
+}

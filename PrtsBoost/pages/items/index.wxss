@@ -4,11 +4,22 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #f5f5f5;
+  background: transparent;
 }
 
 .page-header {
   padding: 24rpx 32rpx 8rpx;
+}
+
+.page-title-row {
+  display: flex;
+  align-items: center;
+}
+
+.page-title-img {
+  height: 44rpx;
+  width: auto;
+  margin-right: 12rpx;
 }
 
 .page-title {
@@ -27,7 +38,7 @@
 .tab-bar {
   display: flex;
   padding: 12rpx 32rpx;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.85);
   border-bottom: 1rpx solid #eee;
 }
 
@@ -37,7 +48,7 @@
   border-radius: 32rpx;
   font-size: 26rpx;
   color: #666;
-  background: #f5f5f5;
+  background: transparent;
   transition: all 0.2s;
 }
 
@@ -59,3 +70,4 @@
   color: #ccc;
   font-size: 28rpx;
 }
+

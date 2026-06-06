@@ -14,17 +14,17 @@ Component({
     treeRoots: {
       type: Array,
       value: []
-    }
+    },
   },
 
   observers: {
     'cartItems': function () {
-      this.refresh();
+      if (!this.data.show) return;
+      this._deferredRefresh();
     },
     'show': function (val) {
-      if (val) {
-        this.refresh();
-      }
+      if (!val) return;
+      this._deferredRefresh();
     }
   },
 
@@ -34,6 +34,16 @@ Component({
   },
 
   methods: {
+    _deferredRefresh: function () {
+      if (this.__refreshScheduled) return;
+      this.__refreshScheduled = true;
+      var self = this;
+      setTimeout(function () {
+        self.__refreshScheduled = false;
+        self.refresh();
+      }, 0);
+    },
+
     refresh: function () {
       const app = getApp();
       const grouped = cart.getGroupedItems(app, this.data.treeRoots);

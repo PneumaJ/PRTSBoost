@@ -26,11 +26,11 @@ This is a **WeChat Mini Program** (微信小程序) using **WeChat Cloud Develop
 
 - **Frontend → Cloud communication MUST go through `wx.cloud.callFunction()`**. Never make direct database calls (`wx.cloud.database()`) or direct HTTP requests from the frontend unless there is an explicit, justified reason.
 - **Cloud functions use `wx-server-sdk`** (Node.js runtime). All backend logic lives in `cloudfunctions/` and is deployed to the cloud.
-- **Environment ID** (`env`) in `PrtsBoost/app.js` `globalData` determines the target cloud environment. If missing, the app must show an error prompt.
+- **Environment ID** (`env`) in `PRTSBoost/app.js` `globalData` determines the target cloud environment. If missing, the app must show an error prompt.
 
 ### File Structure & Registration
 
-- All mini program frontend source lives in `PrtsBoost/` (configured in `project.config.json` `miniprogramRoot`).
+- All mini program frontend source lives in `PRTSBoost/` (configured in `project.config.json` `miniprogramRoot`).
 - All cloud function source lives in `cloudfunctions/` (configured in `project.config.json` `cloudfunctionRoot`).
 - **Every new page MUST be registered in `app.json` under `pages`** — otherwise the page won't load.
 - **Every new component MUST be registered in the parent page's `.json` `usingComponents` field**.
@@ -63,7 +63,7 @@ This is a **WeChat Mini Program** (微信小程序) using **WeChat Cloud Develop
 
 ```
 project.config.json          # WeChat DevTools project config (miniprogramRoot, cloudfunctionRoot, settings)
-PrtsBoost/                 # Mini program frontend
+PRTSBoost/                 # Mini program frontend
   app.js                     # App entry — wx.cloud.init() happens here; configure env in globalData
   app.json                   # Page registration, window config, tab bar
   app.wxss                   # Global styles
@@ -100,10 +100,10 @@ Operations dispatched by `event.type`:
 ## Key Architectural Patterns
 
 ### Frontend → Cloud Communication
-All backend operations go through `wx.cloud.callFunction()`, never direct DB/API calls. The `env` value in `PrtsBoost/app.js` `globalData.env` determines which cloud environment receives the calls. If `env` is empty, the app shows an error modal when users tap features.
+All backend operations go through `wx.cloud.callFunction()`, never direct DB/API calls. The `env` value in `PRTSBoost/app.js` `globalData.env` determines which cloud environment receives the calls. If `env` is empty, the app shows an error modal when users tap features.
 
 ### Navigation & Routing
-- Pages are registered in `PrtsBoost/app.json` under `pages`
+- Pages are registered in `PRTSBoost/app.json` under `pages`
 - Navigation uses `wx.navigateTo()` with URL query parameters (e.g., `?envId=...&type=getOpenId`)
 - The `example/index` page reads `options.type` in `onLoad` to determine which feature demo to render (each `type` maps to a `wx:if` block in the WXML)
 
@@ -118,14 +118,14 @@ The frontend catches two common cloud function errors and maps them to user-faci
 ## Development Workflow
 
 1. Open the project root in **WeChat DevTools** (微信开发者工具)
-2. Set `env` in `PrtsBoost/app.js` to the target cloud environment ID (available from the Cloud Development console in DevTools)
+2. Set `env` in `PRTSBoost/app.js` to the target cloud environment ID (available from the Cloud Development console in DevTools)
 3. To deploy cloud functions: right-click `cloudfunctions/quickstartFunctions/` → **上传并部署-云端安装依赖** (Upload and Deploy — Install Dependencies in Cloud)
 4. The CLI alternative for deploying cloud functions uses the script at `uploadCloudFunction.sh`
 
 ## Configuration Notes
 
-- `project.config.json` `miniprogramRoot` is set to `"PrtsBoost/"` — all mini program source is under this directory
+- `project.config.json` `miniprogramRoot` is set to `"PRTSBoost/"` — all mini program source is under this directory
 - `cloudfunctionRoot` is set to `"cloudfunctions/"`
 - ES6+ transpilation, PostCSS, and minification are enabled in the project settings
-- The sitemap (`PrtsBoost/sitemap.json`) allows all pages to be indexed
+- The sitemap (`PRTSBoost/sitemap.json`) allows all pages to be indexed
 - Tab size in editor settings: 2 spaces

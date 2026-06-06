@@ -24,7 +24,6 @@ Component({
   },
 
   observers: {
-    // 使用函数参数接收新值，避免 this.properties 时序问题
     'node, checkedIds, expandedIds, refreshStamp': function (node, checkedIds, expandedIds) {
       this._applyState(node, checkedIds || [], expandedIds || []);
     }
@@ -36,8 +35,11 @@ Component({
     isExpanded: false,
     indent: 0,
     showCheckbox: true,
-    showReqModal: false,
-    localQuantity: 1
+    showInfoModal: false,
+    localQuantity: 1,
+    usePicker: false,
+    pickerOptions: [],
+    pickerValue: 0
   },
 
   lifetimes: {
@@ -56,7 +58,6 @@ Component({
 
       var hasChildren = node.children && node.children.length > 0;
 
-      // 计算勾选状态
       var checkState = 'unchecked';
       if (node.isLeaf) {
         checkState = checkedIds.indexOf(node.id) >= 0 ? 'checked' : 'unchecked';
@@ -80,7 +81,6 @@ Component({
       var isExpanded = expandedIds.indexOf(node.id) >= 0;
       var showCheckbox = node.isLeaf || node.price != null || node.isPerUnit;
 
-      // 按关计价本地数量同步
       var localQuantity = this.data.localQuantity || 1;
       if (node.isPerUnit) {
         var app = getApp();
@@ -93,13 +93,27 @@ Component({
         }
       }
 
+      var usePicker = node.pickerMin != null && node.pickerMax != null;
+      var pickerOptions = this.data.pickerOptions;
+      var pickerValue = this.data.pickerValue;
+      if (usePicker) {
+        pickerOptions = [];
+        for (var p = node.pickerMin; p <= node.pickerMax; p++) {
+          pickerOptions.push(String(p));
+        }
+        pickerValue = Math.max(0, localQuantity - node.pickerMin);
+      }
+
       this.setData({
         hasChildren: hasChildren,
         checkState: checkState,
         isExpanded: isExpanded,
         indent: this.properties.depth * 36,
         showCheckbox: showCheckbox,
-        localQuantity: localQuantity
+        localQuantity: localQuantity,
+        usePicker: usePicker,
+        pickerOptions: pickerOptions,
+        pickerValue: pickerValue
       });
     },
 
@@ -132,12 +146,12 @@ Component({
       }
     },
 
-    onReqTap: function () {
-      this.setData({ showReqModal: true });
+    onInfoTap: function () {
+      this.setData({ showInfoModal: true });
     },
 
-    onReqModalClose: function () {
-      this.setData({ showReqModal: false });
+    onInfoModalClose: function () {
+      this.setData({ showInfoModal: false });
     },
 
     onQtyMinus: function () {
@@ -155,6 +169,16 @@ Component({
       this.triggerEvent('quantity-change', {
         nodeId: this.properties.node.id,
         quantity: qty
+      });
+    },
+
+    onQtyPick: function (e) {
+      var node = this.properties.node;
+      var val = parseInt(e.detail.value, 10) + (node.pickerMin || 1);
+      this.setData({ localQuantity: val, pickerValue: e.detail.value });
+      this.triggerEvent('quantity-change', {
+        nodeId: node.id,
+        quantity: val
       });
     },
 

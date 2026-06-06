@@ -1,5 +1,6 @@
 // image-preview 组件 — 全屏图片预览 + Canvas 绘制
 const canvasRenderer = require('../../utils/canvas-renderer');
+const cart = require('../../utils/cart');
 
 Component({
   properties: {
@@ -14,6 +15,10 @@ Component({
     treeRoots: {
       type: Array,
       value: []
+    },
+    versionLabel: {
+      type: String,
+      value: ''
     }
   },
 
@@ -53,10 +58,12 @@ Component({
           const canvas = res[0].node;
           const ctx = canvas.getContext('2d');
 
-          // 计算画布尺寸
+          // 计算画布尺寸（getGroupedItems 只算一次，calcHeight + render 共用）
           const dpr = wx.getSystemInfoSync().pixelRatio;
           const width = 375;
-          const height = canvasRenderer.calcHeight(cartItems, treeRoots);
+          const app = getApp();
+          const groupedItems = cart.getGroupedItems(app, treeRoots);
+          const height = canvasRenderer.calcHeight(groupedItems);
 
           canvas.width = width * dpr;
           canvas.height = height * dpr;
@@ -67,24 +74,44 @@ Component({
             canvasHeight: height
           });
 
-          // 绘制
-          canvasRenderer.render(ctx, width, height, cartItems, treeRoots);
-
-          // 导出图片
-          wx.canvasToTempFilePath({
-            canvas: canvas,
-            success: (res) => {
-              this.setData({
-                imagePath: res.tempFilePath,
-                loading: false
-              });
-            },
-            fail: (err) => {
-              console.error('Canvas export failed:', err);
-              this.setData({ loading: false });
-              wx.showToast({ title: '图片生成失败，请重试', icon: 'none' });
-            }
-          });
+          // 加载右下角 Logo
+          const prtsImg = canvas.createImage();
+          prtsImg.src = '/images/prts.jpg';
+          prtsImg.onload = () => {
+            canvasRenderer.render(ctx, width, height, groupedItems, cartItems, treeRoots, prtsImg, this.data.versionLabel);
+            wx.canvasToTempFilePath({
+              canvas: canvas,
+              success: (res) => {
+                this.setData({
+                  imagePath: res.tempFilePath,
+                  loading: false
+                });
+              },
+              fail: (err) => {
+                console.error('Canvas export failed:', err);
+                this.setData({ loading: false });
+                wx.showToast({ title: '图片生成失败，请重试', icon: 'none' });
+              }
+            });
+          };
+          prtsImg.onerror = () => {
+            // Logo 加载失败，继续渲染（不含 Logo）
+            canvasRenderer.render(ctx, width, height, groupedItems, cartItems, treeRoots, undefined, this.data.versionLabel);
+            wx.canvasToTempFilePath({
+              canvas: canvas,
+              success: (res) => {
+                this.setData({
+                  imagePath: res.tempFilePath,
+                  loading: false
+                });
+              },
+              fail: (err) => {
+                console.error('Canvas export failed:', err);
+                this.setData({ loading: false });
+                wx.showToast({ title: '图片生成失败，请重试', icon: 'none' });
+              }
+            });
+          };
         });
     },
 

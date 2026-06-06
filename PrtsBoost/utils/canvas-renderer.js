@@ -4,31 +4,27 @@ const cart = require('./cart');
 /**
  * 计算画布所需高度
  */
-function calcHeight(cartItems, treeRoots) {
-  const app = getApp();
-  const grouped = cart.getGroupedItems(app, treeRoots);
+function calcHeight(groupedItems) {
   let totalItems = 0;
-  let groupCount = grouped.length;
+  let groupCount = groupedItems.length;
 
-  for (const g of grouped) {
+  for (const g of groupedItems) {
     totalItems += g.items.length;
   }
 
-  // 顶部: 标题40 + 日期24 + 分隔线20 + padding 60 = ~144
+  // 顶部: 标题40 + 日期24 + 版本21 + 分隔线20 + padding 60 = ~165
   // 分组标题: 每个30px
   // 项目行: 每行24px
   // 底部: 分隔线20 + 总计40 + 提示24 + padding 40 = ~124
-  const height = 144 + groupCount * 30 + totalItems * 30 + 124 + 40;
+  const height = 165 + groupCount * 30 + totalItems * 30 + 124 + 40;
   return Math.max(height, 400);
 }
 
 /**
  * Canvas 2D 绘制汇总图
  */
-function render(ctx, width, height, cartItems, treeRoots) {
-  const app = getApp();
-  const grouped = cart.getGroupedItems(app, treeRoots);
-  const total = cart.getCartTotal(app, treeRoots);
+function render(ctx, width, height, groupedItems, cartItems, treeRoots, prtsImg, versionLabel) {
+  const total = cart.getCartTotal(getApp(), treeRoots);
 
   // 背景
   ctx.fillStyle = '#FFFFFF';
@@ -40,16 +36,26 @@ function render(ctx, width, height, cartItems, treeRoots) {
   ctx.fillStyle = '#333333';
   ctx.font = 'bold 22px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('PrtsBoost — 选购清单', width / 2, y);
+  ctx.fillText('PRTSBoost — 选购清单', width / 2, y);
   y += 30;
 
-  // 日期
+  // 日期（精确到秒）
   const now = new Date();
-  const dateStr = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
+  const pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+  const dateStr = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日 ' +
+    pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
   ctx.fillStyle = '#999999';
   ctx.font = '14px sans-serif';
   ctx.fillText(dateStr, width / 2, y);
   y += 24;
+
+  // 版本标签
+  if (versionLabel) {
+    ctx.fillStyle = 'rgba(153, 153, 153, 0.5)';
+    ctx.font = '11px sans-serif';
+    ctx.fillText(versionLabel, width / 2, y);
+    y += 21;
+  }
 
   // 分隔线
   y += 10;
@@ -63,7 +69,7 @@ function render(ctx, width, height, cartItems, treeRoots) {
 
   // 分组和项目
   ctx.textAlign = 'left';
-  for (const group of grouped) {
+  for (const group of groupedItems) {
     // 分组标题
     ctx.fillStyle = '#999999';
     ctx.font = 'bold 14px sans-serif';
@@ -122,6 +128,15 @@ function render(ctx, width, height, cartItems, treeRoots) {
   ctx.lineTo(width - 24, y);
   ctx.stroke();
   y += 20;
+
+  // 底部总价区域背景图 — 与画布等宽，底部对齐，低透明度衬底
+  if (prtsImg) {
+    var bgImgH = (prtsImg.height / prtsImg.width) * width;
+    var bgImgY = height - bgImgH;
+    ctx.globalAlpha = 0.10;
+    ctx.drawImage(prtsImg, 0, bgImgY, width, bgImgH);
+    ctx.globalAlpha = 1;
+  }
 
   // 总价 — 标签左对齐，价格居中
   ctx.fillStyle = '#999999';

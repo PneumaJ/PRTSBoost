@@ -1,0 +1,89 @@
+<!-- 托管页 — 三档互斥托管套餐 -->
+<view class="page-container">
+
+  <!-- 全局背景 -->
+  <image class="bg-image" src="/images/bg.jpg" mode="aspectFill" />
+
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <view class="page-title-row">
+      <image class="page-title-img" src="/images/title.jpg" mode="heightFix" />
+      <text class="page-title">PRTSBoost</text>
+      <text class="page-version" wx:if="{{versionLabel}}">{{versionLabel}}</text>
+    </view>
+    <text class="page-subtitle">托管套餐 · 三档互选</text>
+  </view>
+
+  <!-- 套餐卡片列表 -->
+  <scroll-view class="entrust-scroll" scroll-y enhanced="{{true}}" show-scrollbar="{{false}}" bounces="{{false}}">
+    <view class="entrust-section">
+      <view
+        class="entrust-card {{selectedEntrustId === item.id ? 'entrust-card-selected' : ''}}"
+        wx:for="{{entrustTiers}}"
+        wx:key="id"
+        wx:for-item="item"
+        data-tier-id="{{item.id}}"
+        bindtap="onSelectEntrust"
+      >
+        <!-- 卡片头部：名称 + 价格 -->
+        <view class="entrust-card-header">
+          <view class="entrust-card-name-wrap">
+            <text class="entrust-card-name">{{item.name}}</text>
+            <text class="entrust-card-selected-tag" wx:if="{{selectedEntrustId === item.id}}">已选</text>
+          </view>
+          <view class="entrust-card-price-wrap">
+            <text class="entrust-card-price">{{item.price}}r</text>
+            <text class="entrust-card-period">/{{item.period}}</text>
+          </view>
+        </view>
+
+        <!-- 特性列表 -->
+        <view class="entrust-features">
+          <view
+            class="entrust-feat {{item._hasFeature[f] ? 'entrust-feat-on' : 'entrust-feat-off'}}"
+            wx:for="{{entrustAllFeatures}}"
+            wx:key="*this"
+            wx:for-item="f"
+          >
+            <text class="entrust-feat-icon">{{item._hasFeature[f] ? '✓' : '—'}}</text>
+            <text class="entrust-feat-name">{{f}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 备注 -->
+      <view class="entrust-notes" wx:if="{{entrustNotes}}">
+        <text class="entrust-notes-label">备注：</text>
+        <text class="entrust-notes-text">{{entrustNotes}}</text>
+      </view>
+
+      <!-- 底部占位 -->
+      <view style="height: 160rpx;"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 悬浮购物车按钮 -->
+  <view class="float-cart-btn" bindtap="onCartBtnTap">
+    <image class="fc-icon" src="/images/icons/goods.png" mode="aspectFit" />
+    <view class="fc-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>
+  </view>
+
+  <!-- 购物车弹窗 -->
+  <cart-popup
+    show="{{showCart}}"
+    cartItems="{{cartItems}}"
+    treeRoots="{{treeRoots}}"
+    bind:close="onCartClose"
+    bind:cart-changed="onCartChanged"
+    bind:generate="onGenerateImage"
+  />
+
+  <!-- 图片预览 -->
+  <image-preview
+    show="{{showImagePreview}}"
+    cartItems="{{cartItems}}"
+    treeRoots="{{treeRoots}}"
+    versionLabel="{{versionLabel}}"
+    bind:close="onImagePreviewClose"
+  />
+</view>

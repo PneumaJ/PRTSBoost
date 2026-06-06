@@ -2,13 +2,14 @@
   "pages": [
     "pages/packages/index",
     "pages/items/index",
-    "pages/overview/index"
+    "pages/overview/index",
+    "pages/entrust/index"
   ],
   "window": {
     "backgroundColor": "#F5F5F5",
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#FFFFFF",
-    "navigationBarTitleText": "PrtsBoost",
+    "navigationBarTitleText": "PRTSBoost",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
@@ -34,6 +35,12 @@
         "text": "总览",
         "iconPath": "images/icons/business.png",
         "selectedIconPath": "images/icons/business-active.png"
+      },
+      {
+        "pagePath": "pages/entrust/index",
+        "text": "托管",
+        "iconPath": "images/icons/entrust.png",
+        "selectedIconPath": "images/icons/entrust-active.png"
       }
     ]
   },

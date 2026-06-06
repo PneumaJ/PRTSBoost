@@ -30,14 +30,22 @@
     <!-- 名称、备注和内容 -->
     <view class="tn-info">
       <text class="tn-name {{checkState === 'checked' ? 'tn-name-active' : ''}}">{{node.name}}</text>
-      <text class="tn-req-inline" wx:if="{{node.requirement}}" catchtap="onReqTap">（{{node.requirement}}）</text>
-      <text class="tn-content" wx:if="{{node.content}}">{{node.content}}</text>
+      <text class="tn-note-inline" wx:if="{{node.requirement}}" catchtap="onInfoTap">（{{node.requirement}}）</text>
+      <text class="tn-note-inline" wx:if="{{node.content}}" catchtap="onInfoTap">{{node.content}}</text>
 
       <!-- 按关计价数量调节 -->
       <view class="tn-qty-wrap" wx:if="{{node.isPerUnit}}">
-        <view class="tn-qty-btn" catchtap="onQtyMinus"><text class="tn-qty-icon">−</text></view>
-        <input class="tn-qty-input" type="number" value="{{localQuantity}}" bindinput="onQtyInput" />
-        <view class="tn-qty-btn" catchtap="onQtyPlus"><text class="tn-qty-icon">+</text></view>
+        <block wx:if="{{usePicker}}">
+          <picker mode="selector" range="{{pickerOptions}}" value="{{pickerValue}}" bindchange="onQtyPick">
+            <view class="tn-qty-picker">{{localQuantity}}</view>
+          </picker>
+          <text class="tn-qty-unit">关</text>
+        </block>
+        <block wx:else>
+          <view class="tn-qty-btn" catchtap="onQtyMinus"><text class="tn-qty-icon">−</text></view>
+          <input class="tn-qty-input" type="number" value="{{localQuantity}}" bindinput="onQtyInput" />
+          <view class="tn-qty-btn" catchtap="onQtyPlus"><text class="tn-qty-icon">+</text></view>
+        </block>
       </view>
     </view>
 
@@ -46,15 +54,22 @@
     <text class="tn-price tn-price-perunit" wx:elif="{{node.isPerUnit}}">{{node.unitPrice * localQuantity}}r</text>
   </view>
 
-  <!-- 备注弹出层 -->
-  <view class="tn-req-overlay" wx:if="{{showReqModal}}" catchtap="onReqModalClose">
-    <view class="tn-req-modal" catchtap="">
-      <view class="tn-req-modal-close" catchtap="onReqModalClose">
-        <text class="tn-req-modal-close-x">✕</text>
+  <!-- 信息弹出层 -->
+  <view class="tn-info-overlay" wx:if="{{showInfoModal}}" catchtap="onInfoModalClose">
+    <view class="tn-info-modal" catchtap="">
+      <view class="tn-info-modal-close" catchtap="onInfoModalClose">
+        <text class="tn-info-modal-close-x">✕</text>
       </view>
-      <view class="tn-req-modal-title">{{node.name}}</view>
-      <scroll-view class="tn-req-modal-body" scroll-y enhanced="{{true}}" show-scrollbar="{{false}}" wx:if="{{node.requirement}}">
-        <text class="tn-req-modal-text">{{node.requirement}}</text>
+      <view class="tn-info-modal-title">{{node.name}}</view>
+      <scroll-view class="tn-info-modal-body" scroll-y enhanced="{{true}}" show-scrollbar="{{false}}">
+        <view wx:if="{{node.requirement}}" class="tn-info-modal-section">
+          <text class="tn-info-modal-label">备注：</text>
+          <text class="tn-info-modal-text">{{node.requirement}}</text>
+        </view>
+        <view wx:if="{{node.content}}" class="tn-info-modal-section">
+          <text class="tn-info-modal-label">说明：</text>
+          <text class="tn-info-modal-text">{{node.content}}</text>
+        </view>
       </scroll-view>
     </view>
   </view>

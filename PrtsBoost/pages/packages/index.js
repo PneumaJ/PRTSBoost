@@ -1,17 +1,17 @@
 // 套餐页 — 主推优惠套餐展示
-const packageData = require('../../data/packages');
-const treeData = require('../../data/items');
+const loader = require('../../data/loader');
 const cart = require('../../utils/cart');
 
 Page({
   data: {
-    packages: packageData,
+    packages: loader.packages,
     cartCount: 0,
     cartItems: [],
     showCart: false,
     showImagePreview: false,
     pkgSelected: {},
-    treeRoots: treeData,
+    treeRoots: loader.treeRoots,
+    versionLabel: (loader.getNode('cat_new') || {}).content || '',
     // 变体选择: { 'pkg_3': 'default'|'variant', 'pkg_4': 'default'|'variant' }
     variants: {}
   },
@@ -49,16 +49,14 @@ Page({
   // 加入/切换套餐 — 直接以购物车状态判断而非 selectedPackageIds
   onAddPackage: function (e) {
     const pkgId = e.currentTarget.dataset.pkgId;
-    const pkg = packageData.find(p => p.id === pkgId);
+    const pkg = loader.packages.find(function (p) { return p.id === pkgId; });
     if (!pkg) return;
 
     const app = getApp();
     const variantKey = this.data.variants[pkgId] || 'default';
 
     // 直接检查购物车中是否已有该套餐
-    const existingItem = app.globalData.cartItems.find(
-      item => item.id === pkgId && item.type === 'package'
-    );
+    const existingItem = app.globalData.cartItems.find(function (item) { return item.id === pkgId && item.type === 'package'; });
 
     if (existingItem) {
       // 已选中 → 移除（cartId + fallbackId 双重保险）
@@ -83,12 +81,10 @@ Page({
     this.setData({ variants: variants });
 
     // 如果当前选中该套餐，重新添加以更新购物车中的变体
-    const existingItem = app.globalData.cartItems.find(
-      item => item.id === pkgId && item.type === 'package'
-    );
+    const existingItem = app.globalData.cartItems.find(function (item) { return item.id === pkgId && item.type === 'package'; });
     if (existingItem) {
       cart.removeItem(app, existingItem.cartId, pkgId);
-      const pkg = packageData.find(p => p.id === pkgId);
+      const pkg = loader.packages.find(function (p) { return p.id === pkgId; });
       if (pkg) {
         cart.addItem(app, pkg, variantKey);
       }

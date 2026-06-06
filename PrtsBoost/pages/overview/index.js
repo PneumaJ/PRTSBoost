@@ -1,6 +1,5 @@
 // 总览页 — 全包优惠
-const overviewData = require('../../data/overview');
-const treeData = require('../../data/items');
+const loader = require('../../data/loader');
 const cart = require('../../utils/cart');
 
 Page({
@@ -9,13 +8,14 @@ Page({
     cartCategoryPkgIds: [],
     cartCount: 0,
     cartItems: [],
-    treeRoots: treeData,
+    treeRoots: loader.treeRoots,
+    versionLabel: (loader.getNode('cat_new') || {}).content || '',
     showCart: false,
     showImagePreview: false
   },
 
   onLoad: function () {
-    const categoryPkgList = overviewData
+    const categoryPkgList = loader.overview
       .filter(function (item) { return item.type === 'category_package'; })
       .map(function (item, index) {
         item._idx = index;

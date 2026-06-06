@@ -5,22 +5,27 @@ function generateId() {
   return 'cart_' + (_nextId++) + '_' + Date.now();
 }
 
+var _leafCache = {};
+
 /**
- * 递归收集某节点下所有叶子节点的 ID 和价格信息
+ * 递归收集某节点下所有叶子节点的 ID 和价格信息（带缓存）
  */
 function collectLeaves(node) {
+  if (_leafCache[node.id]) return _leafCache[node.id];
   if (node.isLeaf) {
     var leaf = { id: node.id, price: node.price || 0, name: node.name, isLeaf: true };
     if (node.isPerUnit) {
       leaf.isPerUnit = true;
       leaf.unitPrice = node.unitPrice;
     }
+    _leafCache[node.id] = [leaf];
     return [leaf];
   }
   let leaves = [];
   for (const child of node.children || []) {
     leaves = leaves.concat(collectLeaves(child));
   }
+  _leafCache[node.id] = leaves;
   return leaves;
 }
 
@@ -41,6 +46,15 @@ module.exports = {
    */
   addItem: function (app, node, variantKey) {
     const cart = app.globalData.cartItems;
+
+    // 托管互斥逻辑
+    if (node.type === 'entrust') {
+      for (var i = cart.length - 1; i >= 0; i--) {
+        if (cart[i].type === 'entrust') {
+          cart.splice(i, 1);
+        }
+      }
+    }
 
     // 套餐互斥逻辑
     if (node.type === 'package') {
@@ -81,12 +95,18 @@ module.exports = {
       if (exists) return;
     }
 
+    // 避免重复添加同一托管
+    if (node.type === 'entrust') {
+      const exists = cart.find(item => item.id === node.id && item.type === 'entrust');
+      if (exists) return;
+    }
+
     const cartItem = {
       ...node,
       cartId: generateId(),
       addedAt: Date.now(),
       variantKey: variantKey || 'default',
-      quantity: node.isPerUnit ? 1 : 0
+      quantity: node.isPerUnit ? (node.pickerMax || 1) : 0
     };
 
     cart.push(cartItem);
@@ -130,7 +150,7 @@ module.exports = {
           cartId: generateId(),
           addedAt: Date.now(),
           variantKey: 'default',
-          quantity: leaf.isPerUnit ? 1 : 0
+          quantity: leaf.isPerUnit ? (leaf.pickerMax || 1) : 0
         });
       }
     }
@@ -185,6 +205,8 @@ module.exports = {
         total += item.price || 0;
       } else if (item.type === 'category_package') {
         total += item.price || 0;
+      } else if (item.type === 'entrust') {
+        total += item.price || 0;
       }
     }
 
@@ -230,6 +252,8 @@ module.exports = {
           }
         } else if (item.type === 'category_package') {
           total += item.price || 0;
+        } else if (item.type === 'entrust') {
+          total += item.price || 0;
         }
       }
     }
@@ -270,83 +294,192 @@ module.exports = {
   /**
    * 按大类分组购物车项目
    * 已全选的父节点（有全包价）会被折叠为单条汇总项，不再列出所有子节点
+   * process_group 类型的全包价会归入父级 subcategory，只展示前两级
    */
   getGroupedItems: function (app, treeRoots) {
-    const cart = app.globalData.cartItems;
-    const grouped = [];
+    var cart = app.globalData.cartItems;
+    var grouped = [];
 
     // 套餐组
-    const packageItems = cart.filter(item => item.type === 'package');
+    var packageItems = cart.filter(function (item) { return item.type === 'package'; });
     if (packageItems.length > 0) {
       grouped.push({ groupName: '套餐', items: packageItems });
     }
 
     // 品类全包组（从总览页添加的）
-    const catPkgItems = cart.filter(item => item.type === 'category_package');
+    var catPkgItems = cart.filter(function (item) { return item.type === 'category_package'; });
     if (catPkgItems.length > 0) {
       grouped.push({ groupName: '品类全包', items: catPkgItems });
     }
 
+    // 托管组
+    var entrustItems = cart.filter(function (item) { return item.type === 'entrust'; });
+    if (entrustItems.length > 0) {
+      grouped.push({ groupName: '托管', items: entrustItems });
+    }
+
     // 叶子节点 — 已全选且有全包价的父级折叠为单条，其余按大类分组
-    const leafItems = cart.filter(item => item.isLeaf);
+    var leafItems = cart.filter(function (item) { return item.isLeaf; });
     if (leafItems.length > 0 && treeRoots) {
-      const cartLeafIds = new Set(leafItems.map(l => l.id));
+      var cartLeafIds = new Set();
+      for (var i = 0; i < leafItems.length; i++) { cartLeafIds.add(leafItems[i].id); }
 
       // 收集有价格的父节点（深层优先，与 getCartTotal 一致）
-      const pricedGroups = [];
+      var pricedGroups = [];
       this._collectPricedGroups(treeRoots, pricedGroups, 0);
-      pricedGroups.sort((a, b) => b.depth - a.depth);
+      pricedGroups.sort(function (a, b) { return b.depth - a.depth; });
+
+      // 构建 process_group → 父级 subcategory 映射
+      var pgToSub = {};
+      for (var ci = 0; ci < treeRoots.length; ci++) {
+        var cat = treeRoots[ci];
+        var catChildren = cat.children || [];
+        for (var si = 0; si < catChildren.length; si++) {
+          var sub = catChildren[si];
+          if (sub.type === 'subcategory') {
+            var subChildren = sub.children || [];
+            for (var pi = 0; pi < subChildren.length; pi++) {
+              pgToSub[subChildren[pi].id] = { catName: cat.name, subName: sub.name };
+            }
+          }
+        }
+      }
 
       // 被全选父级覆盖的叶子
-      const coveredLeafIds = new Set();
-      const collapsedItems = [];
+      var coveredLeafIds = new Set();
+      var collapsedItems = [];
+      // 按子类汇总的 process_group 全包价（key: catName||subName）
+      var subCollapsedMap = {};
 
-      for (const pg of pricedGroups) {
-        const pgLeafIds = collectLeafIds(pg.node);
-        if (pgLeafIds.length > 0 && pgLeafIds.every(id => cartLeafIds.has(id) || coveredLeafIds.has(id))) {
-          // 该父节点下所有叶子已全选 → 折叠
-          for (const id of pgLeafIds) {
-            coveredLeafIds.add(id);
+      for (var pgi = 0; pgi < pricedGroups.length; pgi++) {
+        var pg = pricedGroups[pgi];
+        var pgLeafIds = collectLeafIds(pg.node);
+        if (pgLeafIds.length > 0 && pgLeafIds.every(function (id) { return cartLeafIds.has(id) || coveredLeafIds.has(id); })) {
+          for (var li = 0; li < pgLeafIds.length; li++) {
+            coveredLeafIds.add(pgLeafIds[li]);
           }
-          collapsedItems.push({
-            name: pg.node.name + '（全包）',
-            price: pg.node.price,
-            _category: this._findTopCategory(pg.node, treeRoots)
+
+          var parentSub = pgToSub[pg.node.id];
+          if (parentSub) {
+            // process_group → 归入父级 subcategory，不单独显示
+            var skey = parentSub.catName + '||' + parentSub.subName;
+            if (!subCollapsedMap[skey]) {
+              subCollapsedMap[skey] = { catName: parentSub.catName, subName: parentSub.subName, totalPrice: 0 };
+            }
+            subCollapsedMap[skey].totalPrice += pg.node.price || 0;
+          } else {
+            // 非 process_group 的全包价父节点 → 正常折叠
+            // 若该节点是 category，清除其下已被折叠的 subCollapsedMap 条目，避免重复显示
+            var topCatName = this._findTopCategory(pg.node, treeRoots);
+            for (var sk in subCollapsedMap) {
+              if (subCollapsedMap[sk].catName === topCatName) {
+                delete subCollapsedMap[sk];
+              }
+            }
+            collapsedItems.push({
+              name: pg.node.name + '（全包）',
+              price: pg.node.price,
+              _category: topCatName
+            });
+          }
+        }
+      }
+
+      // 构建 leafId → { catName, subName } 映射
+      var idToSubInfo = {};
+      for (var ci2 = 0; ci2 < treeRoots.length; ci2++) {
+        var cat2 = treeRoots[ci2];
+        (function walkSubs(children, subName) {
+          for (var wi = 0; wi < (children || []).length; wi++) {
+            var child = children[wi];
+            if (child.type === 'subcategory') {
+              walkSubs(child.children || [], child.name);
+            } else if (child.isLeaf) {
+              idToSubInfo[child.id] = { catName: cat2.name, subName: subName || null };
+            } else if (child.children) {
+              walkSubs(child.children, subName);
+            }
+          }
+        })(cat2.children || []);
+      }
+
+      // 剩余叶子
+      var remainingLeaves = leafItems.filter(function (l) { return !coveredLeafIds.has(l.id); });
+
+      // 分离：有 subName 的叶子按子类汇总，无 subName 的叶子独立显示（如"序章"直接挂在大类下）
+      var subSumMap = {};
+      var directLeafItems = [];
+      for (var ri = 0; ri < remainingLeaves.length; ri++) {
+        var item = remainingLeaves[ri];
+        var info = idToSubInfo[item.id] || { catName: '其他', subName: null };
+        if (info.subName) {
+          var sumKey = info.catName + '|' + info.subName;
+          if (!subSumMap[sumKey]) {
+            subSumMap[sumKey] = { catName: info.catName, subName: info.subName, total: 0 };
+          }
+          if (item.isPerUnit) {
+            subSumMap[sumKey].total += (item.unitPrice || 0) * (item.quantity || 1);
+          } else {
+            subSumMap[sumKey].total += item.price || 0;
+          }
+        } else {
+          // 直接挂在大类下的叶子 → 独立显示，不汇总
+          var dPrice = item.isPerUnit ? (item.unitPrice || 0) * (item.quantity || 1) : (item.price || 0);
+          directLeafItems.push({
+            name: item.name,
+            price: dPrice,
+            _category: info.catName,
+            cartId: item.cartId,
+            isLeaf: true,
+            isPerUnit: item.isPerUnit,
+            quantity: item.quantity
           });
         }
       }
 
-      // 构建 ID→大类 映射
-      const idToCategory = {};
-      for (const cat of treeRoots) {
-        const leaves = collectLeaves(cat);
-        for (const leaf of leaves) {
-          idToCategory[leaf.id] = cat.name;
+      // 将 process_group 全包价汇入对应子类，与剩余叶子合并为一条
+      for (var sk2 in subCollapsedMap) {
+        var sc = subCollapsedMap[sk2];
+        var mergeKey = sc.catName + '|' + sc.subName;
+        if (!subSumMap[mergeKey]) {
+          subSumMap[mergeKey] = { catName: sc.catName, subName: sc.subName, total: 0 };
         }
+        subSumMap[mergeKey].total += sc.totalPrice;
       }
 
-      // 按大类合并：折叠项 + 剩余叶子
-      const catMap = {};
-      for (const ci of collapsedItems) {
-        const catName = ci._category || '其他';
-        if (!catMap[catName]) catMap[catName] = { groupName: catName, items: [] };
-        catMap[catName].items.push(ci);
+      // 按大类合并：折叠项 + 直接叶子 + 子类价格汇总
+      var catMap = {};
+      for (var cli = 0; cli < collapsedItems.length; cli++) {
+        var cn = collapsedItems[cli]._category || '其他';
+        if (!catMap[cn]) catMap[cn] = { groupName: cn, items: [] };
+        catMap[cn].items.push(collapsedItems[cli]);
+      }
+      for (var dli = 0; dli < directLeafItems.length; dli++) {
+        var dl = directLeafItems[dli];
+        var dlCat = dl._category;
+        delete dl._category;
+        if (!catMap[dlCat]) catMap[dlCat] = { groupName: dlCat, items: [] };
+        catMap[dlCat].items.push(dl);
+      }
+      var sumIdx = 0;
+      for (var sk3 in subSumMap) {
+        var ss = subSumMap[sk3];
+        if (!catMap[ss.catName]) catMap[ss.catName] = { groupName: ss.catName, items: [] };
+        catMap[ss.catName].items.push({
+          name: ss.subName,
+          price: ss.total,
+          _summary: true,
+          _key: 'sum_' + (sumIdx++)
+        });
       }
 
-      const remainingLeaves = leafItems.filter(l => !coveredLeafIds.has(l.id));
-      for (const item of remainingLeaves) {
-        const catName = idToCategory[item.id] || '其他';
-        if (!catMap[catName]) catMap[catName] = { groupName: catName, items: [] };
-        catMap[catName].items.push(item);
+      // 按 treeRoots 顺序输出
+      var catOrder = treeRoots.map(function (c) { return c.name; });
+      for (var oi = 0; oi < catOrder.length; oi++) {
+        if (catMap[catOrder[oi]]) grouped.push(catMap[catOrder[oi]]);
       }
-
-      // 按 treeRoots 顺序输出（保持大类顺序一致）
-      const catOrder = treeRoots.map(c => c.name);
-      for (const catName of catOrder) {
-        if (catMap[catName]) grouped.push(catMap[catName]);
-      }
-      for (const key of Object.keys(catMap)) {
-        if (catOrder.indexOf(key) < 0) grouped.push(catMap[key]);
+      for (var sk4 in catMap) {
+        if (catOrder.indexOf(sk4) < 0) grouped.push(catMap[sk4]);
       }
     } else if (leafItems.length > 0) {
       grouped.push({ groupName: '已选项目', items: leafItems });
@@ -356,17 +489,21 @@ module.exports = {
   },
 
   /**
-   * 辅助：查找节点所属的顶级大类名称
+   * 辅助：查找节点所属的顶级大类名称（首次调用构建 leafId→categoryName 缓存）
    */
   _findTopCategory: function (node, treeRoots) {
-    const nodeLeaves = collectLeaves(node);
-    if (nodeLeaves.length === 0) return '其他';
-    const firstId = nodeLeaves[0].id;
-    for (const cat of treeRoots) {
-      const catLeaves = collectLeaves(cat);
-      if (catLeaves.some(l => l.id === firstId)) return cat.name;
+    if (!this._leafToCategory) {
+      this._leafToCategory = {};
+      for (var i = 0; i < treeRoots.length; i++) {
+        var catLeaves = collectLeaves(treeRoots[i]);
+        for (var j = 0; j < catLeaves.length; j++) {
+          this._leafToCategory[catLeaves[j].id] = treeRoots[i].name;
+        }
+      }
     }
-    return '其他';
+    var nodeLeaves = collectLeaves(node);
+    if (nodeLeaves.length === 0) return '其他';
+    return this._leafToCategory[nodeLeaves[0].id] || '其他';
   },
 
   /**

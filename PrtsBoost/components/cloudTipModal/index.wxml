@@ -1,4 +1,4 @@
-<!--PrtsBoost/components/cloudTipModal/index.wxml-->
+<!--PRTSBoost/components/cloudTipModal/index.wxml-->
 <!--  wx:if="{{showUploadTip}}" -->
 <view class="install_tip" wx:if="{{showTip}}">
   <view class="install_tip_back"></view>

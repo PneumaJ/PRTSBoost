@@ -1,9 +1,16 @@
 <!-- 单项页 — 三层树形结构 + 模块Tab -->
 <view class="page-container">
 
+  <!-- 全局背景 -->
+  <image class="bg-image" src="/images/bg.jpg" mode="aspectFill" />
+
   <!-- 页面标题 -->
   <view class="page-header">
-    <text class="page-title">PrtsBoost</text>
+    <view class="page-title-row">
+      <image class="page-title-img" src="/images/title.jpg" mode="heightFix" />
+      <text class="page-title">PRTSBoost</text>
+      <text class="page-version" wx:if="{{versionLabel}}">{{versionLabel}}</text>
+    </view>
     <text class="page-subtitle">单项选择 · 按品类浏览</text>
   </view>
 
@@ -29,6 +36,13 @@
       bindtap="onTabChange"
     >
       <text>基建</text>
+    </view>
+    <view
+      class="tab-item {{currentTab === 'new_content' ? 'tab-active' : ''}}"
+      data-tab="new_content"
+      bindtap="onTabChange"
+    >
+      <text>新增</text>
     </view>
   </view>
 
@@ -80,6 +94,7 @@
     show="{{showImagePreview}}"
     cartItems="{{cartItems}}"
     treeRoots="{{treeRoots}}"
+    versionLabel="{{versionLabel}}"
     bind:close="onImagePreviewClose"
   />
 </view>

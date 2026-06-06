@@ -1,10 +1,10 @@
-# PrtsBoost — 产品需求文档 (PRD)
+# PRTSBoost — 产品需求文档 (PRD)
 
 ## 1. 产品概述
 
 ### 1.1 产品名称
 
-PrtsBoost（PrtsBoost）
+PRTSBoost（PRTSBoost）
 
 ### 1.2 产品定位
 
@@ -38,7 +38,7 @@ PrtsBoost（PrtsBoost）
 
 ### 2.2 套餐页
 
-- 数据源：`PrtsBoost/data/packages.js`
+- 数据源：`PRTSBoost/data/packages.js`
 - 每个套餐以卡片形式展示，包含：
   - 套餐名称
   - 内容说明
@@ -58,7 +58,7 @@ PrtsBoost（PrtsBoost）
 
 ### 2.3 单项页
 
-- 数据源：`PrtsBoost/data/items.js`
+- 数据源：`PRTSBoost/data/items.js`
 - 内容按 **三层树状结构** 展示（无冗余中间层，第一章/第二章保留进程组用于有意义的细分）：
 
 ```
@@ -100,7 +100,7 @@ PrtsBoost（PrtsBoost）
 
 ### 2.4 总览页
 
-- 数据源：`PrtsBoost/data/overview.js`
+- 数据源：`PRTSBoost/data/overview.js`
 - 以分类列表形式展示 **品类全包优惠**：
   - 任务类：主线任务全包 428r、支线任务（重要）全包 208r、次要任务全包 123r、角色故事全包 98r（统一归属"任务"大类）
   - 常驻活动：蚀像寻遗全包 100r、密境行者全包 55r
@@ -153,7 +153,7 @@ PrtsBoost（PrtsBoost）
 
 ### 3.1 数据存储
 
-代肝项目数据以 **JavaScript 模块** 形式存储于 `PrtsBoost/data/` 目录下，在构建时直接 `require` 引入，无需运行时 Markdown 解析。
+代肝项目数据以 **JavaScript 模块** 形式存储于 `PRTSBoost/data/` 目录下，在构建时直接 `require` 引入，无需运行时 Markdown 解析。
 
 原始 Markdown 参考文件存放于项目根目录（`终末地代肝_*.md`），作为数据权威来源。修改数据时应在 MD 源文件和 JS 模块中同步更新。
 
@@ -189,9 +189,9 @@ interface ItemNode {
 
 | 文件名 | 对应页面 | 说明 |
 | --- | --- | --- |
-| `PrtsBoost/data/packages.js` | 套餐页 | 5 个主推套餐 |
-| `PrtsBoost/data/items.js` | 单项页 | 全部品类树形数据（11 大类） |
-| `PrtsBoost/data/overview.js` | 总览页 | 18 条品类全包 + 5 条套餐汇总 |
+| `PRTSBoost/data/packages.js` | 套餐页 | 5 个主推套餐 |
+| `PRTSBoost/data/items.js` | 单项页 | 全部品类树形数据（11 大类） |
+| `PRTSBoost/data/overview.js` | 总览页 | 18 条品类全包 + 5 条套餐汇总 |
 
 ---
 
@@ -248,14 +248,14 @@ interface ItemNode {
 | --- | --- |
 | 框架 | 微信小程序原生框架（WXML + WXSS + JS） |
 | 状态管理 | `getApp().globalData`（购物车数据、选中套餐 ID） |
-| 数据源 | JavaScript 模块（`PrtsBoost/data/*.js`），构建时直接引入 |
+| 数据源 | JavaScript 模块（`PRTSBoost/data/*.js`），构建时直接引入 |
 | 图片生成 | Canvas 2D API（离屏 Canvas + `wx.canvasToTempFilePath`） |
 | 构建工具 | 微信开发者工具 |
 
 ### 5.2 项目结构
 
 ```
-/PrtsBoost
+/PRTSBoost
 ├── app.js                  # 全局状态（cartItems、selectedPackageId）
 ├── app.json                # 路由、TabBar 配置
 ├── app.wxss                # 全局样式（CSS 变量、卡片、按钮等）
