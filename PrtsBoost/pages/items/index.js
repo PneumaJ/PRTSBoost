@@ -35,8 +35,6 @@ Page({
     expandedIds: [],
     refreshStamp: 0,
     cartCount: 0,
-    pkgCount: 0,
-    itemCount: 0,
     cartItems: [],
     versionLabel: (loader.getNode('cat_new') || {}).content || '',
     showCart: false,
@@ -84,12 +82,9 @@ Page({
     const checkedIds = cartItems.filter(function (item) { return item.isLeaf; }).map(function (item) { return item.id; });
     const flatList = this._computeFlatList(this.data.expandedIds);
 
-    var counts = cart.getCartCounts(app);
     this.setData({
       refreshStamp: Date.now(),
-      cartCount: counts.pkgCount + counts.itemCount,
-      pkgCount: counts.pkgCount,
-      itemCount: counts.itemCount,
+      cartCount: cart.getCartCount(app),
       cartItems: cartItems.slice(),
       checkedIds: checkedIds,
       flatList: flatList

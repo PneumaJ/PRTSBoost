@@ -6,8 +6,6 @@ Page({
   data: {
     packages: loader.packages,
     cartCount: 0,
-    pkgCount: 0,
-    itemCount: 0,
     cartItems: [],
     showCart: false,
     showImagePreview: false,
@@ -41,11 +39,8 @@ Page({
         pkgSelected[cartItems[i].id] = true;
       }
     }
-    var counts = cart.getCartCounts(app);
     this.setData({
-      cartCount: counts.pkgCount + counts.itemCount,
-      pkgCount: counts.pkgCount,
-      itemCount: counts.itemCount,
+      cartCount: cart.getCartCount(app),
       cartItems: cartItems.slice(),
       pkgSelected: pkgSelected
     });

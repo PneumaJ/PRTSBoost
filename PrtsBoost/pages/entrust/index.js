@@ -9,8 +9,6 @@ Page({
     entrustNotes: loader.entrustNotes,
     selectedEntrustId: '',
     cartCount: 0,
-    pkgCount: 0,
-    itemCount: 0,
     cartItems: [],
     treeRoots: loader.treeRoots,
     versionLabel: (loader.getNode('cat_new') || {}).content || '',
@@ -42,11 +40,8 @@ Page({
       }
     }
 
-    var counts = cart.getCartCounts(app);
     this.setData({
-      cartCount: counts.pkgCount + counts.itemCount,
-      pkgCount: counts.pkgCount,
-      itemCount: counts.itemCount,
+      cartCount: cart.getCartCount(app),
       cartItems: cartItems.slice(),
       selectedEntrustId: entrustItem ? entrustItem.id : ''
     });

@@ -30,9 +30,7 @@ Component({
 
   data: {
     groupedItems: [],
-    total: 0,
-    pkgCount: 0,
-    itemCount: 0
+    total: 0
   },
 
   methods: {
@@ -50,12 +48,9 @@ Component({
       const app = getApp();
       const grouped = cart.getGroupedItems(app, this.data.treeRoots);
       const total = cart.getCartTotal(app, this.data.treeRoots);
-      const counts = cart.getCartCounts(app);
       this.setData({
         groupedItems: grouped,
-        total: total,
-        pkgCount: counts.pkgCount,
-        itemCount: counts.itemCount
+        total: total
       });
     },
 

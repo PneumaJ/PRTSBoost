@@ -7,8 +7,6 @@ Page({
     categoryPkgList: [],
     cartCategoryPkgIds: [],
     cartCount: 0,
-    pkgCount: 0,
-    itemCount: 0,
     cartItems: [],
     treeRoots: loader.treeRoots,
     versionLabel: (loader.getNode('cat_new') || {}).content || '',
@@ -74,11 +72,8 @@ Page({
       categoryPkgList[k2]._conflict = categoryPkgList[k2].isSelected && conflictRegions[categoryPkgList[k2].region];
     }
 
-    var counts = cart.getCartCounts(app);
     this.setData({
-      cartCount: counts.pkgCount + counts.itemCount,
-      pkgCount: counts.pkgCount,
-      itemCount: counts.itemCount,
+      cartCount: cart.getCartCount(app),
       cartItems: cartItems.slice(),
       cartCategoryPkgIds: cartCategoryPkgIds,
       categoryPkgList: categoryPkgList,
