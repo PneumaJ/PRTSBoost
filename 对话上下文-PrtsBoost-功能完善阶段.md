@@ -544,6 +544,12 @@ app.globalData.cartItems[]           ← 唯一真相源
 - [x] 重命名为独立 ID：`cat_explore_advanced`、子类 `sub_exp_adv_sg`/`sub_exp_adv_wl`、叶子 `leaf_exp_as_N`/`leaf_exp_aw_N`
 - [x] `items/index.js` CAT_MODULE 添加 `'cat_explore_advanced': 'explore'` 映射
 
+**探索类互斥（2026-06-06 新增）**
+- [x] `loader.js` 新增 `nodeTopCategory` 映射（nodeId→topCategoryId）+ `getTopCategoryId()` + `EXPLORE_MUTEX_GROUP` 导出
+- [x] `cart.js` `addItem`/`addLeaves` 探索类互斥逻辑：选择基础/进阶/至尊任一层级叶子时，自动移除其他两个层级的所有叶子
+- [x] `overview.js` 探索条目添加 `region` 字段（四号谷地/武陵）
+- [x] 总览页同区域冲突检测：同一 region 下多选不同类别的探索全包时，显示红色警告"同一区域选择了多个探索档位，价格将重复计算"
+
 **数据配置更新**
 - [x] `items.js` 从 11 大类扩展为 12 大类（+`cat_new` +`cat_explore_advanced`，−`cat_functional`）
 
@@ -575,8 +581,6 @@ app.globalData.cartItems[]           ← 唯一真相源
 ### 待处理
 | 优先级 | 内容 |
 |--------|------|
-| 高 | 探索类互斥 UI 提示（基础 vs 至尊同区域二选一） |
-| 高 | 托管页面图标替换（当前为 placeholder） |
 | 中 | 全包优惠对比提示（"单买总和 vs 全包价，节省 XXr"） |
 | 中 | 一键全选某大类快捷操作 |
 | 低 | 购物车角标细化（套餐数/单项数分别统计） |
@@ -689,3 +693,7 @@ var leaf = { id: node.id, price: node.price || 0, name: node.name, isLeaf: true 
 | 2026-06-06 | P2 修复: tree-node 移除重复 `_collectLeafIds` + canvas-renderer 消除 getApp() 隐藏依赖 |
 | 2026-06-06 | P3 清理: 删除 cloudTipModal(4文件) + envList.js + 无效 CAT_MODULE 映射 + 未使用 CSS 类 |
 | 2026-06-06 | 性能: cart-popup `wx:key="*this"` → `wx:key="cartId"`（高效列表 diff） |
+| 2026-06-06 | 探索类互斥: 单项页三档自动互斥（cart.js addItem/addLeaves）+ 总览页同区域冲突红色警告 |
+| 2026-06-06 | 总览页冲突警告移至冲突项下方内联展示 + 购物车 category_package 显示 category - name |
+| 2026-06-06 | 托管 TabBar 图标替换（盾牌+勾选，灰色常态/红色选中态，Pillow 生成） |
+
