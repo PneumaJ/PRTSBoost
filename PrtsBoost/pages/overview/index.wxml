@@ -49,7 +49,10 @@
   <!-- 悬浮购物车按钮 -->
   <view class="float-cart-btn" bindtap="onCartBtnTap">
     <image class="fc-icon" src="/images/icons/goods.png" mode="aspectFit" />
-    <view class="fc-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>
+    <view class="fc-badge" wx:if="{{cartCount > 0}}">
+      <block wx:if="{{pkgCount > 0 && itemCount > 0}}">{{pkgCount}}+{{itemCount}}</block>
+      <block wx:else>{{cartCount}}</block>
+    </view>
   </view>
 
   <!-- 购物车弹窗 -->

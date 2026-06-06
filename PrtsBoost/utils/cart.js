@@ -223,6 +223,20 @@ module.exports = {
   },
 
   /**
+   * 获取购物车分类数量（套餐数 / 单项数）
+   */
+  getCartCounts: function (app) {
+    var cart = app.globalData.cartItems;
+    var pkgCount = 0;
+    var itemCount = 0;
+    for (var i = 0; i < cart.length; i++) {
+      if (cart[i].type === 'package') pkgCount++;
+      else itemCount++;
+    }
+    return { pkgCount: pkgCount, itemCount: itemCount };
+  },
+
+  /**
    * 计算购物车总价
    * 若父节点（category/subcategory/process_group）下所有叶子均被选中，使用全包优惠价
    * 优先级: 最深层级优先，已全选的叶子不会在父级重复计算
@@ -340,25 +354,13 @@ module.exports = {
     var cart = app.globalData.cartItems;
     var grouped = [];
 
-    // 套餐组
+    // 1. 套餐组
     var packageItems = cart.filter(function (item) { return item.type === 'package'; });
     if (packageItems.length > 0) {
       grouped.push({ groupName: '套餐', items: packageItems });
     }
 
-    // 品类全包组（从总览页添加的）
-    var catPkgItems = cart.filter(function (item) { return item.type === 'category_package'; });
-    if (catPkgItems.length > 0) {
-      grouped.push({ groupName: '品类全包', items: catPkgItems });
-    }
-
-    // 托管组
-    var entrustItems = cart.filter(function (item) { return item.type === 'entrust'; });
-    if (entrustItems.length > 0) {
-      grouped.push({ groupName: '托管', items: entrustItems });
-    }
-
-    // 叶子节点 — 已全选且有全包价的父级折叠为单条，其余按大类分组
+    // 2. 单项 — 叶子节点及汇总（按大类分组）
     var leafItems = cart.filter(function (item) { return item.isLeaf; });
     if (leafItems.length > 0 && treeRoots) {
       var cartLeafIds = new Set();
@@ -523,6 +525,18 @@ module.exports = {
       }
     } else if (leafItems.length > 0) {
       grouped.push({ groupName: '已选项目', items: leafItems });
+    }
+
+    // 3. 品类全包组（从总览页添加的）
+    var catPkgItems = cart.filter(function (item) { return item.type === 'category_package'; });
+    if (catPkgItems.length > 0) {
+      grouped.push({ groupName: '品类全包', items: catPkgItems });
+    }
+
+    // 4. 托管组
+    var entrustItems = cart.filter(function (item) { return item.type === 'entrust'; });
+    if (entrustItems.length > 0) {
+      grouped.push({ groupName: '托管', items: entrustItems });
     }
 
     return grouped;

@@ -7,7 +7,7 @@
 
     <!-- 标题栏 -->
     <view class="cp-header">
-      <text class="cp-title">购物车 ({{cartItems.length}})</text>
+      <text class="cp-title">购物车 (<text wx:if="{{pkgCount > 0}}">{{pkgCount}}套餐 + </text>{{itemCount}}项)</text>
       <text class="cp-clear" wx:if="{{cartItems.length > 0}}" catchtap="onClearAll">清空</text>
       <text class="cp-close" bindtap="onClose">✕</text>
     </view>
@@ -30,6 +30,7 @@
           >
             <view class="cp-item-info">
               <text class="cp-item-name">{{item.type === 'category_package' ? item.category + ' - ' + item.name : item.name}}</text>
+              <text class="cp-item-summary-tag" wx:if="{{item._summary}}">（汇总）</text>
               <text class="cp-item-variant" wx:if="{{item.variantKey === 'variant' && item.variant}}">
                 ({{item.variant.name}})
               </text>
