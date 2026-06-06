@@ -207,6 +207,15 @@ D:\Pneuma\Workspace\PRTSBoost\       ← 工作区根目录（含 project.config
 - **根因**：WeChat 小程序 `require()` 不支持 `.json` 文件作为数据模块加载，仅支持 `.js` 的 `module.exports`
 - **修复**：保持 `.js` 后缀，使用 `module.exports = [...]` 纯对象声明（无工厂函数），loader.js 统一 `require` 并构建树结构
 
+### 7. 购物车项 baseline 对齐（2026-06-06 新增，已废弃）
+- **表现**：`.cp-item`/`.cp-item-info`/`.cp-item-right` 设为 `align-items: baseline` + 文字 `line-height: 1`，名称和价格未对齐
+- **根因**：`baseline` 对齐的是文字基线，中文字体在不同字重下基线位置存在微小偏差，视觉上不对齐
+
+### 8. 购物车项 center + line-height:1 对齐（2026-06-06 新增，已废弃）
+- **表现**：所有 flex 容器改为 `align-items: center` + 文字保持 `line-height: 1`，红色小字(24rpx)与名称(28rpx)仍未对齐
+- **根因**：`line-height: 1` 使各文字盒子高度=字号，不同字号盒子高度不同（名称28rpx、红色小字24rpx），flex `center` 居中盒子而非文字，视觉偏差 2rpx
+- **修复**：统一 `line-height: 28rpx`（最大字号），所有文字盒子等高，`center` 对齐生效
+
 ---
 
 ## ✅ 当前方案/最终方案
@@ -310,6 +319,7 @@ app.globalData.cartItems[]           ← 唯一真相源
 - **JS**：`onClearAll` → `wx.showModal` 确认
 - **JS**：`observers: { 'cartItems': _deferredRefresh, 'show': _deferredRefresh }` — **防抖合并**
 - **WXSS**：精简 padding + **`.cp-panel/.cp-item/.cp-footer` 背景 `rgba(255,255,255,0.92)` 半透明**
+- **WXSS**：**购物车项对齐方案**（最终）：`.cp-item`/`.cp-item-info`/`.cp-item-right` 全部 `align-items: center`，`.cp-item-name`/`.cp-item-variant`/`.cp-item-summary-tag`/`.cp-item-price` 统一 `line-height: 28rpx`（不同字号盒子等高，视觉居中一致）
 
 ### `PRTSBoost/components/image-preview/`
 - **WXML**：固定右上角 ✕ + `scroll-view` 包围图片
@@ -696,4 +706,6 @@ var leaf = { id: node.id, price: node.price || 0, name: node.name, isLeaf: true 
 | 2026-06-06 | 探索类互斥: 单项页三档自动互斥（cart.js addItem/addLeaves）+ 总览页同区域冲突红色警告 |
 | 2026-06-06 | 总览页冲突警告移至冲突项下方内联展示 + 购物车 category_package 显示 category - name |
 | 2026-06-06 | 托管 TabBar 图标替换（盾牌+勾选，灰色常态/红色选中态，Pillow 生成） |
+| 2026-06-06 | 购物车组顺序重排：套餐 → 单项 → 品类全包 → 托管（与页面布局一致） |
+| 2026-06-06 | 购物车项对齐修复（三轮迭代）：baseline → center+line-height:1 → **center+统一line-height:28rpx**（不同字号盒子等高，视觉居中一致） |
 

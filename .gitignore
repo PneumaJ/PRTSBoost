@@ -15,5 +15,8 @@ Thumbs.db
 # Claude local settings (contains personal paths)
 .claude/settings.local.json
 
+# Reference resources (design assets, raw data)
+resource/
+
 # Private config (may contain personal overrides)
 project.private.config.json

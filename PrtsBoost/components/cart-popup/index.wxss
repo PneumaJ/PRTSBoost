@@ -125,6 +125,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 28rpx;
 }
 
 .cp-item-variant {
@@ -132,6 +133,7 @@
   color: #E54545;
   margin-left: 6rpx;
   flex-shrink: 0;
+  line-height: 28rpx;
 }
 
 .cp-item-summary-tag {
@@ -139,6 +141,7 @@
   color: #999;
   margin-left: 6rpx;
   flex-shrink: 0;
+  line-height: 28rpx;
 }
 
 .cp-item-right {
@@ -153,6 +156,7 @@
   font-weight: 600;
   color: #E54545;
   margin-right: 16rpx;
+  line-height: 28rpx;
 }
 
 /* 按关计价数量控制 */

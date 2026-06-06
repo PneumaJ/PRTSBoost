@@ -346,19 +346,7 @@ module.exports = {
       grouped.push({ groupName: '套餐', items: packageItems });
     }
 
-    // 品类全包组（从总览页添加的）
-    var catPkgItems = cart.filter(function (item) { return item.type === 'category_package'; });
-    if (catPkgItems.length > 0) {
-      grouped.push({ groupName: '品类全包', items: catPkgItems });
-    }
-
-    // 托管组
-    var entrustItems = cart.filter(function (item) { return item.type === 'entrust'; });
-    if (entrustItems.length > 0) {
-      grouped.push({ groupName: '托管', items: entrustItems });
-    }
-
-    // 叶子节点 — 已全选且有全包价的父级折叠为单条，其余按大类分组
+    // 单项 — 叶子节点及汇总（按大类分组）
     var leafItems = cart.filter(function (item) { return item.isLeaf; });
     if (leafItems.length > 0 && treeRoots) {
       var cartLeafIds = new Set();
@@ -523,6 +511,18 @@ module.exports = {
       }
     } else if (leafItems.length > 0) {
       grouped.push({ groupName: '已选项目', items: leafItems });
+    }
+
+    // 品类全包（从总览页添加的）
+    var catPkgItems = cart.filter(function (item) { return item.type === 'category_package'; });
+    if (catPkgItems.length > 0) {
+      grouped.push({ groupName: '品类全包', items: catPkgItems });
+    }
+
+    // 托管
+    var entrustItems = cart.filter(function (item) { return item.type === 'entrust'; });
+    if (entrustItems.length > 0) {
+      grouped.push({ groupName: '托管', items: entrustItems });
     }
 
     return grouped;
