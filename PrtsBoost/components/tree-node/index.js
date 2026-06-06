@@ -1,4 +1,6 @@
 // tree-node 组件 — 渲染单个树节点行
+const cart = require('../../utils/cart');
+
 Component({
   properties: {
     node: {
@@ -62,7 +64,7 @@ Component({
       if (node.isLeaf) {
         checkState = checkedIds.indexOf(node.id) >= 0 ? 'checked' : 'unchecked';
       } else if (hasChildren) {
-        var leafIds = this._collectLeafIds(node);
+        var leafIds = cart.collectLeafIds(node);
         if (leafIds.length > 0) {
           var checkedCount = 0;
           for (var i = 0; i < leafIds.length; i++) {
@@ -115,17 +117,6 @@ Component({
         pickerOptions: pickerOptions,
         pickerValue: pickerValue
       });
-    },
-
-    _collectLeafIds: function (node) {
-      if (node.isLeaf) return [node.id];
-      var ids = [];
-      if (node.children) {
-        for (var i = 0; i < node.children.length; i++) {
-          ids = ids.concat(this._collectLeafIds(node.children[i]));
-        }
-      }
-      return ids;
     },
 
     onCheckTap: function () {

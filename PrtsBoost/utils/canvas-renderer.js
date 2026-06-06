@@ -23,8 +23,7 @@ function calcHeight(groupedItems) {
 /**
  * Canvas 2D 绘制汇总图
  */
-function render(ctx, width, height, groupedItems, cartItems, treeRoots, prtsImg, versionLabel) {
-  const total = cart.getCartTotal(getApp(), treeRoots);
+function render(ctx, width, height, groupedItems, cartItems, treeRoots, prtsImg, versionLabel, total) {
 
   // 背景
   ctx.fillStyle = '#FFFFFF';

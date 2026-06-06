@@ -25,7 +25,7 @@
           <view
             class="cp-item"
             wx:for="{{group.items}}"
-            wx:key="*this"
+            wx:key="cartId"
             wx:for-item="item"
           >
             <view class="cp-item-info">

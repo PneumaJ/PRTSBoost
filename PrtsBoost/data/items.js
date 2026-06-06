@@ -215,7 +215,7 @@ module.exports = [
           { id: 'leaf_side_020', name: '重要的街角', price: 15, requirement: '3天' },
           { id: 'leaf_side_021', name: '老人与潮', price: 10, requirement: '2天' },
           { id: 'leaf_side_022', name: '再引春来系列', price: 20, requirement: '开图' },
-          { id: 'leaf_side_022', name: '藏剑于谷', price: 20 }
+          { id: 'leaf_side_023', name: '藏剑于谷', price: 20 }
         ]
       }
     ]
@@ -255,7 +255,7 @@ module.exports = [
           { id: 'leaf_minor_022', name: '粉丝见面会', price: 5 },
           { id: 'leaf_minor_023', name: '致后来人', price: 3 },
           { id: 'leaf_minor_024', name: '分忧解难', price: 15, requirement: '需抽水' },
-          { id: 'leaf_minor_024', name: '古崖论剑', price: 5 }
+          { id: 'leaf_minor_025', name: '古崖论剑', price: 5 }
         ]
       }
     ]
@@ -277,7 +277,7 @@ module.exports = [
           { id: 'leaf_story_3', name: '追忆之痕', price: 25, requirement: '比较长' },
           { id: 'leaf_story_4', name: '信使的信', price: 20 },
           { id: 'leaf_story_5', name: '红骑士', price: 20 },
-          { id: 'leaf_story_5', name: '以拳问心', price: 20 }
+          { id: 'leaf_story_6', name: '以拳问心', price: 20 }
         ]
       }
     ]

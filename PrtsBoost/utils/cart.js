@@ -101,6 +101,12 @@ module.exports = {
       if (exists) return;
     }
 
+    // 避免重复添加同一品类全包
+    if (node.type === 'category_package') {
+      const exists = cart.find(item => item.id === node.id && item.type === 'category_package');
+      if (exists) return;
+    }
+
     const cartItem = {
       ...node,
       cartId: generateId(),

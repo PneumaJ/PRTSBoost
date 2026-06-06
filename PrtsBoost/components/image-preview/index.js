@@ -63,6 +63,7 @@ Component({
           const width = 375;
           const app = getApp();
           const groupedItems = cart.getGroupedItems(app, treeRoots);
+          const total = cart.getCartTotal(app, treeRoots);
           const height = canvasRenderer.calcHeight(groupedItems);
 
           canvas.width = width * dpr;
@@ -78,7 +79,7 @@ Component({
           const prtsImg = canvas.createImage();
           prtsImg.src = '/images/prts.jpg';
           prtsImg.onload = () => {
-            canvasRenderer.render(ctx, width, height, groupedItems, cartItems, treeRoots, prtsImg, this.data.versionLabel);
+            canvasRenderer.render(ctx, width, height, groupedItems, cartItems, treeRoots, prtsImg, this.data.versionLabel, total);
             wx.canvasToTempFilePath({
               canvas: canvas,
               success: (res) => {
@@ -96,7 +97,7 @@ Component({
           };
           prtsImg.onerror = () => {
             // Logo 加载失败，继续渲染（不含 Logo）
-            canvasRenderer.render(ctx, width, height, groupedItems, cartItems, treeRoots, undefined, this.data.versionLabel);
+            canvasRenderer.render(ctx, width, height, groupedItems, cartItems, treeRoots, undefined, this.data.versionLabel, total);
             wx.canvasToTempFilePath({
               canvas: canvas,
               success: (res) => {

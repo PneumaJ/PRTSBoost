@@ -547,6 +547,31 @@ app.globalData.cartItems[]           ← 唯一真相源
 **数据配置更新**
 - [x] `items.js` 从 11 大类扩展为 12 大类（+`cat_new` +`cat_explore_advanced`，−`cat_functional`）
 
+### 已完成（代码审查与修复 — 2026-06-06）
+
+**P0 — 重复 ID 导致数据静默丢失**
+- [x] `leaf_side_022`（藏剑于谷）与 `leaf_side_022`（再引春来系列）重复 → 前者改为 `leaf_side_023`
+- [x] `leaf_minor_024`（古崖论剑）与 `leaf_minor_024`（分忧解难）重复 → 前者改为 `leaf_minor_025`
+- [x] `leaf_story_5`（以拳问心）与 `leaf_story_5`（红骑士）重复 → 前者改为 `leaf_story_6`
+- [x] `cat_explore_basic`（进阶探索类）与基础探索类 ID 碰撞 → 重命名为 `cat_explore_advanced`（子节点同步唯一化）
+
+**P1 — 购物车操作绕过 cart.js 工具函数**
+- [x] Overview 页 `onAddCategoryPkg` 直接 splice/push `globalData.cartItems` → 改用 `cart.addItem`/`cart.removeItem`
+- [x] Items 页 `onQuantityChange` 直接赋值 `cartItems[i].quantity` → 改用 `cart.updateQuantity` 计算 delta
+- [x] `cart.addItem` 缺少 `category_package` 类型去重检查 → 添加去重逻辑
+
+**P2 — 代码重复与隐藏依赖**
+- [x] `tree-node/index.js` 重复实现 `_collectLeafIds` → 移除，统一使用 `cart.collectLeafIds`
+- [x] `canvas-renderer.js` 内部调用 `getApp()` 获取总价 → `render()` 改为接收 `total` 参数
+- [x] `image-preview/index.js` 一次性计算 `total` 和 `groupedItems`，传入 `calcHeight` + `render` 共用
+
+**P3 — 死代码与性能**
+- [x] `items/index.js` 移除无效 `cat_new_1_2` CAT_MODULE 映射（对应节点不存在）
+- [x] 删除 `components/cloudTipModal/`（4 个文件，未被引用）
+- [x] 删除 `envList.js`（未被引用）
+- [x] `app.wxss` 移除未使用的 `.card`、`.price-tag`、`.price-tag-small` CSS 类
+- [x] `cart-popup/index.wxml` `wx:key="*this"` → `wx:key="cartId"`（高效 key 提升列表 diff）
+
 ### 待处理
 | 优先级 | 内容 |
 |--------|------|
@@ -659,3 +684,8 @@ var leaf = { id: node.id, price: node.price || 0, name: node.name, isLeaf: true 
 | 2026-06-06 | TabBar 新增第 4 标签"托管"（套餐 | 单项 | 总览 | 托管） |
 | 2026-06-06 | 进阶探索类 ID 重命名：`cat_explore_basic`→`cat_explore_advanced`（消除与基础探索类碰撞） |
 | 2026-06-06 | `data/tuoguan.js` 重命名为 `data/entrust.js`（ID 和 type 同步更新） |
+| 2026-06-06 | P0 修复: 3 个重复叶子 ID（`leaf_side_023`/`leaf_minor_025`/`leaf_story_6`）+ 进阶探索类 ID 规范化 |
+| 2026-06-06 | P1 修复: Overview/Items 页绕过 cart.js 工具函数 → 统一使用 cart.addItem/removeItem/updateQuantity |
+| 2026-06-06 | P2 修复: tree-node 移除重复 `_collectLeafIds` + canvas-renderer 消除 getApp() 隐藏依赖 |
+| 2026-06-06 | P3 清理: 删除 cloudTipModal(4文件) + envList.js + 无效 CAT_MODULE 映射 + 未使用 CSS 类 |
+| 2026-06-06 | 性能: cart-popup `wx:key="*this"` → `wx:key="cartId"`（高效列表 diff） |

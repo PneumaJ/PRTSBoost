@@ -63,34 +63,26 @@ Page({
     if (!item) return;
 
     var app = getApp();
-    var cartItems = app.globalData.cartItems;
     var targetId = item._uid;
 
-    var existingIdx = -1;
+    var existingItem = null;
+    var cartItems = cart.getCartItems(app);
     for (var i = 0; i < cartItems.length; i++) {
       if (cartItems[i].id === targetId && cartItems[i].type === 'category_package') {
-        existingIdx = i;
+        existingItem = cartItems[i];
         break;
       }
     }
 
-    if (existingIdx >= 0) {
-      cartItems.splice(existingIdx, 1);
+    if (existingItem) {
+      cart.removeItem(app, existingItem.cartId, targetId);
     } else {
-      cartItems.push({
+      cart.addItem(app, {
         id: targetId,
         name: item.name,
         price: item.price,
         type: 'category_package',
-        category: item.category,
-        isLeaf: false,
-        content: '',
-        requirement: '',
-        children: [],
-        cartId: 'cart_' + targetId + '_' + Date.now(),
-        addedAt: Date.now(),
-        variantKey: 'default',
-        quantity: 0
+        category: item.category
       });
     }
 

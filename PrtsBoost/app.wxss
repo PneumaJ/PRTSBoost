@@ -42,28 +42,6 @@ page {
   pointer-events: none;
 }
 
-/* 卡片样式 */
-.card {
-  background: var(--white);
-  border-radius: 16rpx;
-  box-shadow: var(--shadow);
-  padding: 24rpx;
-  margin: 16rpx 24rpx;
-}
-
-/* 价格文字 */
-.price-tag {
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 32rpx;
-}
-
-.price-tag-small {
-  color: var(--primary);
-  font-weight: 600;
-  font-size: 26rpx;
-}
-
 /* 按钮重置 */
 button {
   padding: 0;

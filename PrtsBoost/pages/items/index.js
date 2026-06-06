@@ -12,7 +12,6 @@ const CAT_MODULE = {
   'cat_explore_basic': 'explore',
   'cat_explore_advanced': 'explore',
   'cat_explore_premium': 'explore',
-  'cat_new_1_2': 'explore',
   'cat_infra_wire': 'infra',
   'cat_infra_zipline': 'infra',
   'cat_new': 'new_content'
@@ -192,10 +191,10 @@ Page({
     var nodeId = e.detail.nodeId;
     var quantity = e.detail.quantity;
     var app = getApp();
-    var cartItems = app.globalData.cartItems;
+    var cartItems = cart.getCartItems(app);
     for (var i = 0; i < cartItems.length; i++) {
       if (cartItems[i].id === nodeId && cartItems[i].isLeaf && cartItems[i].isPerUnit) {
-        cartItems[i].quantity = quantity;
+        cart.updateQuantity(app, cartItems[i].cartId, quantity - cartItems[i].quantity);
         break;
       }
     }
