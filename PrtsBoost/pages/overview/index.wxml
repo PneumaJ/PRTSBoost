@@ -17,32 +17,29 @@
   <!-- 全包优惠列表 -->
   <scroll-view class="ov-scroll" scroll-y enhanced="{{true}}" show-scrollbar="{{false}}" bounces="{{false}}">
     <view class="ov-section">
-      <!-- 探索档位冲突警告 -->
-      <view class="ov-conflict-warn" wx:if="{{regionConflict}}">
-        <text class="ov-conflict-icon">⚠</text>
-        <text class="ov-conflict-text">同一区域选择了多个探索档位（基础/进阶/至尊），价格将重复计算</text>
-      </view>
-      <view
-        class="ov-row"
-        wx:for="{{categoryPkgList}}"
-        wx:key="_idx"
-      >
-        <view class="ov-row-info">
-          <text class="ov-row-category">{{item.category}}</text>
-          <text class="ov-row-name">{{item.name}}</text>
-        </view>
-        <view class="ov-row-right">
-          <text class="ov-row-price">{{item.price}}r</text>
-          <view
-            class="btn-add-circle {{item.isSelected ? 'active' : ''}}"
-            data-index="{{item._idx}}"
-            catchtap="onAddCategoryPkg"
-          >
-            <text wx:if="{{!item.isSelected}}">+</text>
-            <text wx:else>✓</text>
+      <block wx:for="{{categoryPkgList}}" wx:key="_idx">
+        <view class="ov-row">
+          <view class="ov-row-info">
+            <text class="ov-row-category">{{item.category}}</text>
+            <text class="ov-row-name">{{item.name}}</text>
+          </view>
+          <view class="ov-row-right">
+            <text class="ov-row-price">{{item.price}}r</text>
+            <view
+              class="btn-add-circle {{item.isSelected ? 'active' : ''}}"
+              data-index="{{item._idx}}"
+              catchtap="onAddCategoryPkg"
+            >
+              <text wx:if="{{!item.isSelected}}">+</text>
+              <text wx:else>✓</text>
+            </view>
           </view>
         </view>
-      </view>
+        <!-- 探索档位冲突警告 — 在冲突项下方内联展示 -->
+        <view class="ov-conflict-warn" wx:if="{{item._conflict}}">
+          <text class="ov-conflict-text">同一区域选择了多个探索档位（基础/进阶/至尊），价格将重复计算</text>
+        </view>
+      </block>
     </view>
 
     <!-- 底部占位 -->

@@ -62,8 +62,14 @@ Page({
       }
     }
     var regionConflict = false;
+    var conflictRegions = {};
     for (var r in regionCats) {
-      if (regionCats[r].length > 1) { regionConflict = true; break; }
+      if (regionCats[r].length > 1) { regionConflict = true; conflictRegions[r] = true; }
+    }
+
+    // 标记冲突项，供 WXML 内联警告
+    for (var k2 = 0; k2 < categoryPkgList.length; k2++) {
+      categoryPkgList[k2]._conflict = categoryPkgList[k2].isSelected && conflictRegions[categoryPkgList[k2].region];
     }
 
     this.setData({

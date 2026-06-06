@@ -29,7 +29,7 @@
             wx:for-item="item"
           >
             <view class="cp-item-info">
-              <text class="cp-item-name">{{item.name}}</text>
+              <text class="cp-item-name">{{item.type === 'category_package' ? item.category + ' - ' + item.name : item.name}}</text>
               <text class="cp-item-variant" wx:if="{{item.variantKey === 'variant' && item.variant}}">
                 ({{item.variant.name}})
               </text>
