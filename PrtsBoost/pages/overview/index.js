@@ -10,6 +10,7 @@ Page({
     cartItems: [],
     treeRoots: loader.treeRoots,
     versionLabel: (loader.getNode('cat_new') || {}).content || '',
+    regionConflict: false,
     showCart: false,
     showImagePreview: false
   },
@@ -49,11 +50,28 @@ Page({
       categoryPkgList[j].isSelected = cartCategoryPkgIds.indexOf(categoryPkgList[j]._uid) >= 0;
     }
 
+    // 检测同区域探索档位冲突
+    var regionCats = {};
+    for (var k = 0; k < categoryPkgList.length; k++) {
+      var pkg = categoryPkgList[k];
+      if (pkg.isSelected && pkg.region) {
+        if (!regionCats[pkg.region]) regionCats[pkg.region] = [];
+        if (regionCats[pkg.region].indexOf(pkg.category) < 0) {
+          regionCats[pkg.region].push(pkg.category);
+        }
+      }
+    }
+    var regionConflict = false;
+    for (var r in regionCats) {
+      if (regionCats[r].length > 1) { regionConflict = true; break; }
+    }
+
     this.setData({
       cartCount: cart.getCartCount(app),
       cartItems: cartItems.slice(),
       cartCategoryPkgIds: cartCategoryPkgIds,
-      categoryPkgList: categoryPkgList
+      categoryPkgList: categoryPkgList,
+      regionConflict: regionConflict
     });
   },
 

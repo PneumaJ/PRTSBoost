@@ -1,5 +1,7 @@
 // 购物车工具 — 操作 getApp().globalData 的纯函数
 
+const loader = require('../data/loader');
+
 let _nextId = 1;
 function generateId() {
   return 'cart_' + (_nextId++) + '_' + Date.now();
@@ -107,6 +109,20 @@ module.exports = {
       if (exists) return;
     }
 
+    // 探索类互斥：选择某探索层级的叶子时，自动取消其他两个层级的所有叶子
+    if (node.isLeaf) {
+      var topCat = loader.getTopCategoryId(node.id);
+      var mutexGroup = loader.exploreMutexGroup;
+      if (topCat && mutexGroup.indexOf(topCat) >= 0) {
+        for (var i = cart.length - 1; i >= 0; i--) {
+          var itemTopCat = loader.getTopCategoryId(cart[i].id);
+          if (itemTopCat && itemTopCat !== topCat && mutexGroup.indexOf(itemTopCat) >= 0) {
+            cart.splice(i, 1);
+          }
+        }
+      }
+    }
+
     const cartItem = {
       ...node,
       cartId: generateId(),
@@ -147,6 +163,9 @@ module.exports = {
    * 批量加入叶子节点列表
    */
   addLeaves: function (app, leaves) {
+    var addedExploreCat = null;
+    var mutexGroup = loader.exploreMutexGroup;
+
     for (const leaf of leaves) {
       // 避免重复
       const exists = app.globalData.cartItems.find(item => item.id === leaf.id);
@@ -158,6 +177,21 @@ module.exports = {
           variantKey: 'default',
           quantity: leaf.isPerUnit ? (leaf.pickerMax || 1) : 0
         });
+      }
+      if (!addedExploreCat) {
+        var tc = loader.getTopCategoryId(leaf.id);
+        if (tc && mutexGroup.indexOf(tc) >= 0) addedExploreCat = tc;
+      }
+    }
+
+    // 探索类互斥：批量添加后移除其他探索层级的所有叶子
+    if (addedExploreCat) {
+      var cart = app.globalData.cartItems;
+      for (var i = cart.length - 1; i >= 0; i--) {
+        var itemTopCat = loader.getTopCategoryId(cart[i].id);
+        if (itemTopCat && itemTopCat !== addedExploreCat && mutexGroup.indexOf(itemTopCat) >= 0) {
+          cart.splice(i, 1);
+        }
       }
     }
   },

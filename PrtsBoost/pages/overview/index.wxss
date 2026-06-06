@@ -41,6 +41,29 @@
   padding-top: 8rpx;
 }
 
+/* === 冲突警告 === */
+.ov-conflict-warn {
+  display: flex;
+  align-items: center;
+  margin: 0 24rpx 12rpx;
+  padding: 12rpx 20rpx;
+  background: #FFF0F0;
+  border: 1rpx solid #FFCCCC;
+  border-radius: 8rpx;
+}
+
+.ov-conflict-icon {
+  font-size: 24rpx;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+}
+
+.ov-conflict-text {
+  font-size: 22rpx;
+  color: #E54545;
+  line-height: 1.4;
+}
+
 /* === 全包优惠行 === */
 .ov-section {
   margin-bottom: 16rpx;

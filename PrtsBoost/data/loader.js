@@ -13,8 +13,13 @@ var entrustData = require('./entrust.js');
 
 // O(1) ID→Node 平铺映射
 var nodeMap = {};
+// nodeId → topCategoryId 映射（用于探索类互斥判断）
+var nodeTopCategory = {};
 
-function buildTree(nodes, depth) {
+// 探索类互斥组：选择其中一类时自动取消其他两类
+var EXPLORE_MUTEX_GROUP = ['cat_explore_basic', 'cat_explore_advanced', 'cat_explore_premium'];
+
+function buildTree(nodes, depth, topCategoryId) {
   return nodes.map(function (node) {
     var hasChildren = node.children && node.children.length > 0;
     var type;
@@ -26,6 +31,8 @@ function buildTree(nodes, depth) {
       type = 'leaf';
     }
 
+    var myTopCategoryId = depth === 0 ? node.id : (topCategoryId || null);
+
     var result = {
       id: node.id,
       name: node.name,
@@ -34,7 +41,7 @@ function buildTree(nodes, depth) {
       content: node.content || '',
       requirement: node.requirement || '',
       isLeaf: type === 'leaf',
-      children: hasChildren ? buildTree(node.children, depth + 1) : []
+      children: hasChildren ? buildTree(node.children, depth + 1, myTopCategoryId) : []
     };
 
     if (node.isPerUnit) {
@@ -45,6 +52,7 @@ function buildTree(nodes, depth) {
     }
 
     nodeMap[result.id] = result;
+    nodeTopCategory[result.id] = myTopCategoryId;
     return result;
   });
 }
@@ -84,5 +92,11 @@ module.exports = {
 
   getNode: function (id) {
     return nodeMap[id] || null;
-  }
+  },
+
+  getTopCategoryId: function (nodeId) {
+    return nodeTopCategory[nodeId] || null;
+  },
+
+  exploreMutexGroup: EXPLORE_MUTEX_GROUP
 };
