@@ -20,3 +20,8 @@ resource/
 
 # Private config (may contain personal overrides)
 project.private.config.json
+
+# Internal development docs (not for public repo)
+CLAUDE.md
+PRD.md
+对话上下文*.md
